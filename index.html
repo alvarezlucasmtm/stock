@@ -50,7 +50,7 @@ tbody tr:hover{background:#f9f9f9;}
         <div class="hdr-sub">Stock disponible = Stock total &minus; Pedidos comprometidos activos (12 pedidos)</div>
       </div>
     </div>
-    <div class="ts">&#9201; 17/06/2026 11:17</div>
+    <div class="ts">&#9201; 17/06/2026 11:18</div>
   </div>
   <div class="banner"><div class="dot"></div>Auto-actualizaci&oacute;n cada 5 minutos. Pr&oacute;xima recarga autom&aacute;tica en breve.</div>
   <div class="tabs">
@@ -616,6 +616,10 @@ tbody tr:hover{background:#f9f9f9;}
         style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">
         &#9651; Solo diferencias
       </button>
+      <button onclick="printControl()"
+        style="padding:8px 14px;border-radius:8px;border:2px solid #3a86ff;background:#fff;color:#3a86ff;font-size:12px;font-weight:700;cursor:pointer;">
+        &#128438; Imprimir planilla
+      </button>
       <button onclick="resetControl()"
         style="padding:8px 14px;border-radius:8px;border:2px solid #d94040;background:#fff;color:#d94040;font-size:12px;font-weight:700;cursor:pointer;">
         &#8635; Reiniciar conteo
@@ -774,6 +778,52 @@ function toggleSoloDiff(btn){
   renderControl();
 }
 function filterControl(){renderControl();}
+function printControl(){
+  var now=new Date();
+  var f=('0'+now.getDate()).slice(-2)+'/'+('0'+(now.getMonth()+1)).slice(-2)+'/'+now.getFullYear();
+  var rows='';
+  var n=0;
+  PRODUCTOS.forEach(function(p){
+    n++;
+    rows+='<tr>'
+      +'<td style="text-align:center;font-size:11px;color:#666;">'+n+'</td>'
+      +'<td style="font-size:12px;font-weight:600;">'+p.n+'</td>'
+      +'<td style="text-align:right;font-size:12px;">'+fmtN(p.s)+'</td>'
+      +'<td style="border:1.5px solid #333;width:90px;">&nbsp;</td>'
+      +'<td style="border:1.5px solid #333;width:90px;">&nbsp;</td>'
+      +'<td style="border:1.5px solid #333;width:130px;">&nbsp;</td>'
+      +'</tr>';
+  });
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Planilla Control de Stock</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}'
+    +'body{padding:16px;}h2{font-size:16px;margin-bottom:4px;}p{font-size:11px;color:#555;margin-bottom:12px;}'
+    +'table{width:100%;border-collapse:collapse;}th{background:#222;color:#fff;padding:7px 8px;font-size:11px;text-align:left;}'
+    +'td{padding:6px 8px;border-bottom:1px solid #ddd;vertical-align:middle;}'
+    +'tr:nth-child(even){background:#f7f7f7;}'
+    +'.firma{margin-top:40px;display:flex;gap:60px;}'
+    +'.firma-line{border-top:1px solid #333;width:200px;padding-top:4px;font-size:11px;color:#666;text-align:center;}'
+    +'@media print{body{padding:8px;}}'
+    +'</style></head><body>'
+    +'<h2>&#9745; Planilla de Control de Stock &mdash; MTM Pilar</h2>'
+    +'<p>Fecha: '+f+'&nbsp;&nbsp;&nbsp;Responsable: ___________________________</p>'
+    +'<table><thead><tr>'
+    +'<th style="width:32px;">#</th>'
+    +'<th>Producto</th>'
+    +'<th style="text-align:right;width:90px;">Sistema</th>'
+    +'<th style="width:90px;">F&iacute;sico</th>'
+    +'<th style="width:90px;">Diferencia</th>'
+    +'<th style="width:130px;">Observaciones</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<div class="firma">'
+    +'<div class="firma-line">Firma responsable</div>'
+    +'<div class="firma-line">Verificado por</div>'
+    +'</div>'
+    +'<script>window.onload=function(){window.print();}<\/script>'
+    +'</body></html>';
+  var w=window.open('','_blank','width=900,height=700');
+  w.document.write(html);
+  w.document.close();
+}
 function resetControl(){
   if(!confirm('Â¿Reiniciar todos los conteos fÃ­sicos?'))return;
   _ctrlData={};
