@@ -50,7 +50,7 @@ tbody tr:hover{background:#f9f9f9;}
         <div class="hdr-sub">Stock disponible = Stock total &minus; Pedidos comprometidos activos (12 pedidos)</div>
       </div>
     </div>
-    <div class="ts">&#9201; 17/06/2026 11:07</div>
+    <div class="ts">&#9201; 17/06/2026 11:12</div>
   </div>
   <div class="banner"><div class="dot"></div>Auto-actualizaci&oacute;n cada 5 minutos. Pr&oacute;xima recarga autom&aacute;tica en breve.</div>
   <div class="tabs">
@@ -60,6 +60,7 @@ tbody tr:hover{background:#f9f9f9;}
     <button class="tab-btn" onclick="showTab('tab-alertas',this)">&#9888; Alertas de Stock (5)</button>
     <button class="tab-btn" onclick="showTab('tab-vencimientos',this)">&#128197; Vencimientos (18)</button>
     <button class="tab-btn" onclick="showTab('tab-proveedores',this)">&#128666; Proveedores (0)</button>
+    <button class="tab-btn" onclick="showTab('tab-control',this)">&#9745; Control de Stock</button>
   </div>
 
   <div id="tab-stock" class="tab-content active">
@@ -606,6 +607,39 @@ tbody tr:hover{background:#f9f9f9;}
       </div>
     </div>
   </div>
+
+  <div id="tab-control" class="tab-content">
+    <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
+      <input id="ctrl-search" type="text" placeholder="&#128269; Buscar producto..." oninput="filterControl()"
+        style="flex:1;min-width:200px;padding:9px 14px;border-radius:8px;border:2px solid #e0e0e0;font-size:13px;background:#fff;color:#222;outline:none;">
+      <button id="btn-solo-diff" onclick="toggleSoloDiff(this)"
+        style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">
+        &#9651; Solo diferencias
+      </button>
+      <button onclick="resetControl()"
+        style="padding:8px 14px;border-radius:8px;border:2px solid #d94040;background:#fff;color:#d94040;font-size:12px;font-weight:700;cursor:pointer;">
+        &#8635; Reiniciar conteo
+      </button>
+    </div>
+    <div class="card">
+      <div class="card-hdr" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>&#9745; Control de Stock F&iacute;sico</span>
+        <span id="ctrl-fecha" style="font-size:12px;font-weight:400;color:#aaa;"></span>
+      </div>
+      <div style="overflow-x:auto;">
+      <table id="tbl-control">
+        <thead><tr>
+          <th>Producto</th>
+          <th style="text-align:right;">Sistema</th>
+          <th style="text-align:right;">Conteo F&iacute;sico</th>
+          <th style="text-align:right;">DIFERENCIA</th>
+          <th style="text-align:center;">Estado</th>
+        </tr></thead>
+        <tbody id="ctrl-body"></tbody>
+      </table>
+      </div>
+    </div>
+  </div>
 </div>
 <script>
 function toggleCard(id,card){
@@ -666,6 +700,89 @@ function togglePP(i){var d=document.getElementById('pp-det-'+i);if(d)d.style.dis
     }
   });
 })();
+var PRODUCTOS=[{n:'AZUCAR LA CAMPECHANA X 1KG (10U)',s:42},{n:'LECHE LA CAMPECHANA ENTERA CARTON X 1L (8U)',s:9115},{n:'ACEITE DE GIRASOL DON JOSE X900ML',s:0},{n:'ACEITE DE GIRASOL DON JOSE X5L',s:0},{n:'AZUCAR DON ANDRES X 1KG (10U)',s:0},{n:'YERBA MATE PRIMERA CITA X 500G',s:0},{n:'LECHE ENTERA REINA DEL PRADO X 1 LTS (8 UNIDADES)',s:0},{n:'YERBA MATE PRIMERA CITA X 1KG',s:0},{n:'ACEITE DE GIRASOL GOYE X 900ML (12U)',s:0},{n:'ACEITE DE GIRASOL EL ARGENTINO X 900ML (12U)',s:0},{n:'AZUCAR DE 25KG',s:324},{n:'ACEITE DE GIRASOL LA CAMPECHANA X 900ML (12U)',s:2890},{n:'LECHE LA CAMPECHANA DESCREMADA CARTON X 1L (8U)',s:14862},{n:'ARROZ LA CAMPECHANA 5/0 LARGO FINO X 1KG (10 UNIDADES)',s:8448},{n:'ARROZ LA CAMPECHANA 4/0 LARGO FINO X 1KG (10 UNIDADES)',s:5346},{n:'ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)',s:3205},{n:'HARINA 000 LA CAMPECHANA X 1KG (10U)',s:10744},{n:'ACEITE DE GIRASOL LA CAMPECHANA 4L (4U)',s:183},{n:'BOLSAS DE AZUCAR X 50KG',s:243},{n:'YERBA MATE LA CAMPECHANA X 500G (10U)',s:26745},{n:'ACEITE DE GIRASOL LA CAMPECHANA X 5LTS (4U)',s:796},];
+var _ctrlData={};
+var _soloDiff=false;
+function fmtN(n){return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+function loadControl(){
+  try{_ctrlData=JSON.parse(localStorage.getItem('ctrl_mtm')||'{}');}catch(e){_ctrlData={};}
+  var f=localStorage.getItem('ctrl_mtm_fecha')||'';
+  var el=document.getElementById('ctrl-fecha');if(el)el.textContent=f?'Ãšltimo conteo: '+f:'';
+  renderControl();
+}
+function saveControl(){
+  localStorage.setItem('ctrl_mtm',JSON.stringify(_ctrlData));
+  var now=new Date();
+  var f=('0'+now.getDate()).slice(-2)+'/'+('0'+(now.getMonth()+1)).slice(-2)+'/'+now.getFullYear()+' '+('0'+now.getHours()).slice(-2)+':'+('0'+now.getMinutes()).slice(-2);
+  localStorage.setItem('ctrl_mtm_fecha',f);
+  var el=document.getElementById('ctrl-fecha');if(el)el.textContent='Ãšltimo conteo: '+f;
+}
+function renderControl(){
+  var tbody=document.getElementById('ctrl-body');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  var q=(document.getElementById('ctrl-search').value||'').toLowerCase();
+  PRODUCTOS.forEach(function(p,i){
+    var fisico=_ctrlData.hasOwnProperty(p.n)?_ctrlData[p.n]:null;
+    var diff=fisico!==null?(fisico-p.s):null;
+    if(_soloDiff&&(diff===null||diff===0))return;
+    if(q&&p.n.toLowerCase().indexOf(q)<0)return;
+    var diffColor=diff===null?'#aaa':(diff<0?'#d94040':(diff>0?'#e09020':'#1D9E75'));
+    var diffText=diff===null?'&mdash;':(diff>0?'+'+fmtN(diff):fmtN(diff));
+    var eLabel=diff===null?'PENDIENTE':(diff===0?'OK':(diff<0?'FALTANTE':'SOBRANTE'));
+    var eColor=diff===null?'#aaa':(diff===0?'#1D9E75':(diff<0?'#d94040':'#e09020'));
+    var fVal=fisico!==null?fisico:'';
+    var tr=document.createElement('tr');
+    tr.style.borderBottom='1px solid #eee';
+    tr.setAttribute('data-i',i);
+    tr.setAttribute('data-s',p.s);
+    tr.innerHTML='<td style="padding:10px 14px;font-weight:600;font-size:13px;">'+p.n+'</td>'
+      +'<td style="padding:10px 14px;text-align:right;font-size:13px;">'+fmtN(p.s)+'</td>'
+      +'<td style="padding:10px 14px;text-align:right;">'
+      +'<input type="number" value="'+fVal+'" placeholder="Ingresar..." '
+      +'style="width:120px;padding:6px 10px;border-radius:6px;border:2px solid #e0e0e0;font-size:13px;text-align:right;" '
+      +'oninput="onCtrlInput(this,'+i+')" '
+      +'onfocus="this.style.borderColor=\'#1D9E75\'" onblur="this.style.borderColor=\'#e0e0e0\'">'
+      +'</td>'
+      +'<td id="ctrl-diff-'+i+'" style="padding:10px 14px;text-align:right;font-size:15px;font-weight:800;color:'+diffColor+';">'+diffText+'</td>'
+      +'<td id="ctrl-est-'+i+'" style="padding:10px 14px;text-align:center;"><span style="background:'+eColor+';color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;">'+eLabel+'</span></td>';
+    tbody.appendChild(tr);
+  });
+}
+function onCtrlInput(input,i){
+  var p=PRODUCTOS[i];
+  var v=input.value.trim();
+  if(v===''){delete _ctrlData[p.n];}else{_ctrlData[p.n]=parseFloat(v);}
+  saveControl();
+  var s=parseFloat(input.parentElement.parentElement.getAttribute('data-s'))||0;
+  var fisico=_ctrlData.hasOwnProperty(p.n)?_ctrlData[p.n]:null;
+  var diff=fisico!==null?(fisico-s):null;
+  var diffColor=diff===null?'#aaa':(diff<0?'#d94040':(diff>0?'#e09020':'#1D9E75'));
+  var diffText=diff===null?'&mdash;':(diff>0?'+'+fmtN(diff):fmtN(diff));
+  var eLabel=diff===null?'PENDIENTE':(diff===0?'OK':(diff<0?'FALTANTE':'SOBRANTE'));
+  var eColor=diff===null?'#aaa':(diff===0?'#1D9E75':(diff<0?'#d94040':'#e09020'));
+  var dc=document.getElementById('ctrl-diff-'+i);
+  if(dc){dc.innerHTML=diffText;dc.style.color=diffColor;}
+  var ec=document.getElementById('ctrl-est-'+i);
+  if(ec){ec.innerHTML='<span style="background:'+eColor+';color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;">'+eLabel+'</span>';}
+}
+function toggleSoloDiff(btn){
+  _soloDiff=!_soloDiff;
+  btn.style.background=_soloDiff?'#3a86ff':'#fff';
+  btn.style.color=_soloDiff?'#fff':'#666';
+  btn.style.borderColor=_soloDiff?'#3a86ff':'#e0e0e0';
+  renderControl();
+}
+function filterControl(){renderControl();}
+function resetControl(){
+  if(!confirm('Â¿Reiniciar todos los conteos fÃ­sicos?'))return;
+  _ctrlData={};
+  localStorage.removeItem('ctrl_mtm');
+  localStorage.removeItem('ctrl_mtm_fecha');
+  var el=document.getElementById('ctrl-fecha');if(el)el.textContent='';
+  renderControl();
+}
+loadControl();
 </script>
 </body>
 </html>
