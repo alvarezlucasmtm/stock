@@ -50,13 +50,13 @@ tbody tr:hover{background:#f9f9f9;}
         <div class="hdr-sub">Stock disponible = Stock total &minus; Pedidos comprometidos activos (34 pedidos)</div>
       </div>
     </div>
-    <div class="ts">&#9201; 10/08/2026 10:42</div>
+    <div class="ts">&#9201; 10/08/2026 10:45</div>
   </div>
   <div class="banner"><div class="dot"></div>Auto-actualizaci&oacute;n cada 5 minutos. Pr&oacute;xima recarga autom&aacute;tica en breve.</div>
   <div class="tabs">
     <button class="tab-btn active" onclick="showTab('tab-stock',this)">&#128203; Stock Disponible</button>
     <button class="tab-btn" onclick="showTab('tab-pedidos',this)">&#128221; Pedidos Activos (34)</button>
-    <button class="tab-btn" onclick="showTab('tab-mayoristas',this)">&#127968; Mayoristas (16)</button>
+    <button class="tab-btn" onclick="showTab('tab-mayoristas',this)">&#127968; Mayoristas (7)</button>
     <button class="tab-btn" onclick="showTab('tab-entregas',this)">&#128666; Entregas Directas (9)</button>
     <button class="tab-btn" onclick="showTab('tab-alertas',this)">&#9888; Alertas de Stock (7)</button>
     <button class="tab-btn" onclick="showTab('tab-vencimientos',this)">&#128197; Vencimientos (7)</button>
@@ -943,22 +943,10 @@ tbody tr:hover{background:#f9f9f9;}
   </div>
 
   <div id="tab-mayoristas" class="tab-content">
-    <div class="card" style="margin-bottom:16px;">
-      <div class="card-hdr">Mayorista &mdash; <span id="cnt-may-mayorista">0</span> pedidos</div>
+    <div class="card">
+      <div class="card-hdr">Mayoristas &mdash; <span id="cnt-may-mayorista">0</span> pedidos</div>
       <div style="overflow-x:auto;">
       <table id="tbl-mayoristas-mayorista">
-        <thead><tr>
-          <th>#</th><th>Fecha</th><th>Cliente</th><th>Vendedor</th><th>Localidad</th>
-          <th>Dep&oacute;sito</th><th>Transportista</th><th style="text-align:right;">Total</th>
-          <th style="text-align:center;">Estado</th><th>Tipo</th><th></th>
-        </tr></thead>
-      </table>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr">Entrega Directa &mdash; <span id="cnt-may-directa">0</span> pedidos</div>
-      <div style="overflow-x:auto;">
-      <table id="tbl-mayoristas-directa">
         <thead><tr>
           <th>#</th><th>Fecha</th><th>Cliente</th><th>Vendedor</th><th>Localidad</th>
           <th>Dep&oacute;sito</th><th>Transportista</th><th style="text-align:right;">Total</th>
@@ -1148,7 +1136,6 @@ function poblarPorTipo(tblId,prefix,matchFn,cntId){
 }
 (function(){
   poblarPorTipo('tbl-mayoristas-mayorista','pmm',isSoloMayorista,'cnt-may-mayorista');
-  poblarPorTipo('tbl-mayoristas-directa','pmd',isEntregaDirecta,'cnt-may-directa');
   poblarPorTipo('tbl-entregas','ed',isEntregaDirecta,'cnt-entregas');
 })();
 var PRODUCTOS=[{n:'HARINA 000 LA CAMPECHANA X 1KG',s:3750},{n:'AZUCAR LA CAMPECHANA X 1KG',s:24602},{n:'BOLSAS DE AZUCAR X 50KG',s:33},{n:'LECHE LA CAMPECHANA DESCREMADA CARTON X 1L (8U)',s:12},{n:'ACEITE DE GIRASOL LA CAMPECHANA X 900ML (12U)',s:12876},{n:'LECHE LA CAMPECHANA ENTERA CARTON X 1L (8U)',s:1380},{n:'YERBA MATE PRIMERA CITA X 500G',s:0},{n:'AZUCAR DON ANDRES X 1KG',s:0},{n:'ACEITE DE GIRASOL DON JOSE X5L',s:0},{n:'LECHE ENTERA REINA DEL PRADO X 1 LTS (8 UNIDADES)',s:0},{n:'ARROZ LA CAMPECHANA 4/0 LARGO FINO X 500GR (10 UNIDADES)',s:0},{n:'ACEITE DE GIRASOL EL ARGENTINO X 900ML (12U)',s:0},{n:'YERBA MATE PRIMERA CITA X 1KG',s:0},{n:'ACEITE DE GIRASOL DON JOSE X900ML',s:0},{n:'ACEITE DE GIRASOL GOYE X 900ML (12U)',s:0},{n:'ARROZ LA CAMPECHANA 5/0 LARGO FINO X 500GR (10 UNIDADES)',s:30831},{n:'ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)',s:10855},{n:'YERBA MATE LA CAMPECHANA X 500G',s:18466},{n:'ARROZ LA CAMPECHANA 4/0 LARGO FINO X 1KG (10 UNIDADES)',s:3263},{n:'ARROZ LA CAMPECHANA 5/0 LARGO FINO X 1KG (10 UNIDADES)',s:6379},{n:'AZUCAR DE 25KG',s:439},{n:'ACEITE DE GIRASOL LA CAMPECHANA X 5LTS (4U)',s:1777},{n:'ACEITE DE GIRASOL LA CAMPECHANA 4L (4U)',s:3301},];
