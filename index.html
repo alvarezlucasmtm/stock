@@ -50,7 +50,7 @@ tbody tr:hover{background:#f9f9f9;}
         <div class="hdr-sub">Stock disponible = Stock total &minus; Pedidos comprometidos activos (34 pedidos)</div>
       </div>
     </div>
-    <div class="ts">&#9201; 21/08/2026 20:02</div>
+    <div class="ts">&#9201; 21/08/2026 20:05</div>
   </div>
   <div class="banner"><div class="dot"></div>Auto-actualizaci&oacute;n cada 5 minutos. Pr&oacute;xima recarga autom&aacute;tica en breve.</div>
   <div class="tabs">
@@ -59,7 +59,7 @@ tbody tr:hover{background:#f9f9f9;}
     <button class="tab-btn" onclick="showTab('tab-retiro',this)">&#127970; Retiro en Dep&oacute;sito (14)</button>
     <button class="tab-btn" onclick="showTab('tab-mayoristas',this)">&#127968; Mayoristas (9)</button>
     <button class="tab-btn" onclick="showTab('tab-entregas',this)">&#128666; Entregas Directas (9)</button>
-    <button class="tab-btn" onclick="showTab('tab-encamino',this)">&#128667; Pedidos en Camino (10)</button>
+    <button class="tab-btn" onclick="showTab('tab-encamino',this)">&#128667; Pedidos en Camino (11)</button>
     <button class="tab-btn" onclick="showTab('tab-alertas',this)">&#9888; Alertas de Stock (8)</button>
     <button class="tab-btn" onclick="showTab('tab-control',this)">&#9745; Control de Stock</button>
   </div>
@@ -1014,6 +1014,41 @@ tbody tr:hover{background:#f9f9f9;}
 
   <div id="tab-encamino" class="tab-content">
     <div class='card' style='margin-bottom:16px;'>
+      <div class='card-hdr'>&#127970; Venta Directa &mdash; 2 pedidos</div>
+      <div style='overflow-x:auto;'>
+      <table>
+        <thead><tr>
+          <th>#</th><th>Fecha</th><th>Cliente</th><th>Vendedor</th><th>Localidad</th>
+          <th>Transportista</th><th style='text-align:right;'>Total</th><th>Tipo</th>
+          <th style='text-align:center;'>D&iacute;as desde el pedido</th>
+        </tr></thead>
+        <tbody><tr style='border-bottom:1px solid #eee;'>
+      <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1430' target='_blank' rel='noopener' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1430</a></td>
+      <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-20</td>
+      <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Blanco, Ricardo</td>
+      <td style='padding:10px 14px;font-size:12px;color:#888;'>Leandro</td>
+      <td style='padding:10px 14px;font-size:12px;'>tucuman - Tucumán</td>
+      <td style='padding:10px 14px;font-size:12px;'>TRANSPORTE ADUAN </td>
+      <td style='padding:10px 14px;font-weight:700;text-align:right;'>$ 35,000,000</td>
+      <td style='padding:10px 14px;font-size:12px;'>Cruzada con una compra</td>
+      <td style='padding:10px 14px;text-align:center;font-size:12px;color:#3a86ff;font-weight:600;'>1 d&iacute;as</td>
+    </tr>
+<tr style='border-bottom:1px solid #eee;'>
+      <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1412' target='_blank' rel='noopener' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1412</a></td>
+      <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-20</td>
+      <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Blanco, Ricardo</td>
+      <td style='padding:10px 14px;font-size:12px;color:#888;'>Leandro</td>
+      <td style='padding:10px 14px;font-size:12px;'>tucuman - Tucumán</td>
+      <td style='padding:10px 14px;font-size:12px;'>TRANSPORTE ADUAN </td>
+      <td style='padding:10px 14px;font-weight:700;text-align:right;'>$ 35,000,000</td>
+      <td style='padding:10px 14px;font-size:12px;'>Cruzada con una compra</td>
+      <td style='padding:10px 14px;text-align:center;font-size:12px;color:#3a86ff;font-weight:600;'>1 d&iacute;as</td>
+    </tr>
+</tbody>
+      </table>
+      </div>
+      <div style='padding:12px 18px;border-top:1px solid #eee;'><div style='font-size:12px;font-weight:700;color:#666;margin-bottom:6px;'>&#128230; Resumen de productos en camino</div><div style='display:flex;justify-content:space-between;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span>BOLSAS DE AZUCAR X 50KG</span><span style='font-weight:700;color:#3a86ff;'>2,000</span></div></div>
+    </div><div class='card' style='margin-bottom:16px;'>
       <div class='card-hdr'>&#127970; Copells &mdash; 7 pedidos</div>
       <div style='overflow-x:auto;'>
       <table>
@@ -1127,30 +1162,6 @@ tbody tr:hover{background:#f9f9f9;}
       </table>
       </div>
       <div style='padding:12px 18px;border-top:1px solid #eee;'><div style='font-size:12px;font-weight:700;color:#666;margin-bottom:6px;'>&#128230; Resumen de productos en camino</div><div style='display:flex;justify-content:space-between;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span>ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)</span><span style='font-weight:700;color:#3a86ff;'>1,440</span></div><div style='display:flex;justify-content:space-between;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span>ACEITE DE GIRASOL LA CAMPECHANA X 900ML (12U)</span><span style='font-weight:700;color:#3a86ff;'>11,340</span></div></div>
-    </div><div class='card' style='margin-bottom:16px;'>
-      <div class='card-hdr'>&#127970; Venta Directa &mdash; 1 pedidos</div>
-      <div style='overflow-x:auto;'>
-      <table>
-        <thead><tr>
-          <th>#</th><th>Fecha</th><th>Cliente</th><th>Vendedor</th><th>Localidad</th>
-          <th>Transportista</th><th style='text-align:right;'>Total</th><th>Tipo</th>
-          <th style='text-align:center;'>D&iacute;as desde el pedido</th>
-        </tr></thead>
-        <tbody><tr style='border-bottom:1px solid #eee;'>
-      <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1412' target='_blank' rel='noopener' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1412</a></td>
-      <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-20</td>
-      <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Blanco, Ricardo</td>
-      <td style='padding:10px 14px;font-size:12px;color:#888;'>Leandro</td>
-      <td style='padding:10px 14px;font-size:12px;'>tucuman - Tucumán</td>
-      <td style='padding:10px 14px;font-size:12px;'>TRANSPORTE ADUAN </td>
-      <td style='padding:10px 14px;font-weight:700;text-align:right;'>$ 35,000,000</td>
-      <td style='padding:10px 14px;font-size:12px;'>Cruzada con una compra</td>
-      <td style='padding:10px 14px;text-align:center;font-size:12px;color:#3a86ff;font-weight:600;'>1 d&iacute;as</td>
-    </tr>
-</tbody>
-      </table>
-      </div>
-      <div style='padding:12px 18px;border-top:1px solid #eee;'><div style='font-size:12px;font-weight:700;color:#666;margin-bottom:6px;'>&#128230; Resumen de productos en camino</div><div style='display:flex;justify-content:space-between;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span>BOLSAS DE AZUCAR X 50KG</span><span style='font-weight:700;color:#3a86ff;'>1,000</span></div></div>
     </div><div class='card' style='margin-bottom:16px;'>
       <div class='card-hdr'>&#127970; MTM Pilar &mdash; 1 pedidos</div>
       <div style='overflow-x:auto;'>
