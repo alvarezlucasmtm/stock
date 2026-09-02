@@ -4,10 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <script>setTimeout(function(){window.location.replace(window.location.pathname+'?v='+Date.now());},180000);</script>
+<script>(function(){try{var t=localStorage.getItem('theme_otros')||'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <title>Stock Disponible La Tablada / Proyecto Rojas / Venta Directa</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
 body{background:#f0f2f5;min-height:100vh;}
+[data-theme="dark"] body{background:#14161b;color:#dcdfe4;}
+[data-theme="dark"] .hdr,[data-theme="dark"] .banner,[data-theme="dark"] .card,[data-theme="dark"] .mc{background:#1e2128 !important;color:#dcdfe4;}
+[data-theme="dark"] .hdr-title{color:#f0f0f0 !important;}
+[data-theme="dark"] .hdr-sub,[data-theme="dark"] .banner{color:#9aa0aa !important;}
+[data-theme="dark"] .ts,[data-theme="dark"] #theme-toggle{background:#262a33 !important;color:#c7ccd4 !important;}
+[data-theme="dark"] .tab-btn{background:#1e2128 !important;border-color:#333844 !important;color:#b0b6bf !important;}
+[data-theme="dark"] .tab-btn.active{background:#1D9E75 !important;color:#fff !important;border-color:#1D9E75 !important;}
+[data-theme="dark"] .card-hdr{border-color:#333844 !important;color:#e8e8e8 !important;}
+[data-theme="dark"] .mc-lbl{color:#9aa0aa !important;}
+[data-theme="dark"] .mc-sub{color:#6b7078 !important;}
+[data-theme="dark"] .mc-body{border-color:#333844 !important;}
+[data-theme="dark"] table,[data-theme="dark"] tr,[data-theme="dark"] td,[data-theme="dark"] th{background:transparent !important;color:#d6d9de !important;border-color:#2b2f38 !important;}
+[data-theme="dark"] thead tr{background:#20232b !important;}
+[data-theme="dark"] th{color:#9aa0aa !important;}
+[data-theme="dark"] tbody tr:hover{background:#262a33 !important;}
+[data-theme="dark"] input{background:#20232b !important;color:#e8e8e8 !important;border-color:#333844 !important;}
+[data-theme="dark"] .ftipo{background:#1e2128 !important;border-color:#333844 !important;color:#b0b6bf !important;}
+[data-theme="dark"] .ftipo.active{background:#1D9E75 !important;border-color:#1D9E75 !important;color:#fff !important;}
+[data-theme="dark"] a{color:#6fa8ff !important;}
 .wrap{max-width:1200px;margin:0 auto;padding:24px 16px;}
 .hdr{background:#fff;border-radius:14px;padding:18px 22px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.07);}
 .hdr-title{font-size:19px;font-weight:700;color:#111;}
@@ -44,212 +64,37 @@ tbody tr:hover{background:#f9f9f9;}
 <div class="wrap">
   <div class="hdr">
     <div style="display:flex;align-items:center;gap:16px;">
-      <img src="https://raw.githubusercontent.com/alvarezlucasmtm/stock/main/logo.jpg" alt="La Campechana" style="height:56px;width:auto;object-fit:contain;">
+      <img src="logo-otros.jpg" alt="La Campechana" style="height:56px;width:auto;object-fit:contain;border-radius:6px;">
       <div>
         <div class="hdr-title">Dep&oacute;sito La Tablada / Proyecto Rojas / Venta Directa</div>
-        <div class="hdr-sub">Stock disponible = Stock total &minus; Pedidos comprometidos activos (16 pedidos)</div>
+        <div class="hdr-sub">Stock disponible = Stock total &minus; Pedidos comprometidos activos (14 pedidos)</div>
       </div>
     </div>
-    <div class="ts">&#9201; 01/09/2026 10:44</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button id="theme-toggle" onclick="toggleTheme()" style="font-size:12px;color:#888;background:#f5f5f5;padding:6px 13px;border-radius:20px;white-space:nowrap;border:none;cursor:pointer;font-weight:600;">&#127769; Modo oscuro</button>
+      <div class="ts">&#9201; 02/09/2026 10:39</div>
+    </div>
   </div>
   <div class="banner"><div class="dot"></div>Auto-actualizaci&oacute;n cada 5 minutos. Pr&oacute;xima recarga autom&aacute;tica en breve.</div>
   <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('tab-stock',this)">&#128203; Stock Disponible</button>
-    <button class="tab-btn" onclick="showTab('tab-pedidos',this)">&#128221; Pedidos Activos (16)</button>
-    <button class="tab-btn" onclick="showTab('tab-retiro',this)">&#127970; Retiro en Dep&oacute;sito (2)</button>
-    <button class="tab-btn" onclick="showTab('tab-mayoristas',this)">&#127968; Mayoristas (0)</button>
-    <button class="tab-btn" onclick="showTab('tab-entregas',this)">&#128666; Entregas Directas (11)</button>
-    <button class="tab-btn" onclick="showTab('tab-encamino',this)">&#128667; Pedidos en Camino (0)</button>
-    <button class="tab-btn" onclick="showTab('tab-alertas',this)">&#9888; Alertas de Stock (0)</button>
-    <button class="tab-btn" onclick="showTab('tab-control',this)">&#9745; Control de Stock</button>
+    <button class="tab-btn active" onclick="showTab('tab-pedidos',this)">&#128221; Pedidos Activos (14)</button>
+    <button class="tab-btn" onclick="showTab('tab-entregas',this)">&#128666; Entregas Directas (10)</button>
+    <button class="tab-btn" onclick="showTab('tab-depprod',this)">&#128230; Productos por Dep&oacute;sito</button>
   </div>
 
-  <div id="tab-stock" class="tab-content active">
-    <div class="metrics">
-      <div class="mc mc-gn" onclick="toggleCard('ok-list',this)">
-        <div class="mc-hdr"><div><div class="mc-lbl">&#9989; Stock OK</div><div class="mc-val">0</div><div class="mc-sub">listos para vender &middot; clic para ver</div></div><div class="mc-arr">&#9660;</div></div>
-        <div id="ok-list" class="mc-body" style="display:none;"></div>
-      </div>
-      <div class="mc mc-am" onclick="toggleCard('bajo-list',this)">
-        <div class="mc-hdr"><div><div class="mc-lbl">&#9889; Stock Bajo</div><div class="mc-val">0</div><div class="mc-sub">reponer pronto &middot; clic para ver</div></div><div class="mc-arr">&#9660;</div></div>
-        <div id="bajo-list" class="mc-body" style="display:none;"></div>
-      </div>
-      <div class="mc mc-rd" onclick="toggleCard('critico-list',this)">
-        <div class="mc-hdr"><div><div class="mc-lbl">&#128680; Cr&iacute;tico</div><div class="mc-val">6</div><div class="mc-sub">pedidos superan stock &middot; clic para ver</div></div><div class="mc-arr">&#9660;</div></div>
-        <div id="critico-list" class="mc-body" style="display:none;"><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)</span><span style='color:#e09020;margin-right:8px;white-space:nowrap;'>ped: 30.240</span><span style='color:#d94040;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>ACEITE DE GIRASOL GOYE X 900ML (12U)</span><span style='color:#e09020;margin-right:8px;white-space:nowrap;'>ped: 107.640</span><span style='color:#d94040;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>BOLSAS DE AZUCAR X 50KG</span><span style='color:#e09020;margin-right:8px;white-space:nowrap;'>ped: 3.560</span><span style='color:#d94040;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>ACEITE DE GIRASOL LA CAMPECHANA X 900ML (12U)</span><span style='color:#e09020;margin-right:8px;white-space:nowrap;'>ped: 32.760</span><span style='color:#d94040;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>ACEITE DE GIRASOL LA CAMPECHANA 4L (4U)</span><span style='color:#e09020;margin-right:8px;white-space:nowrap;'>ped: 5.760</span><span style='color:#d94040;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>ACEITE DE GIRASOL LA CAMPECHANA X 5LTS (4U)</span><span style='color:#e09020;margin-right:8px;white-space:nowrap;'>ped: 4.560</span><span style='color:#d94040;font-weight:700;white-space:nowrap;'>disp: 0</span></div></div>
-      </div>
-      <div class="mc mc-gy" onclick="toggleCard('sinstock-list',this)">
-        <div class="mc-hdr"><div><div class="mc-lbl">&#128230; Sin Stock</div><div class="mc-val">7</div><div class="mc-sub">stock en cero &middot; clic para ver</div></div><div class="mc-arr">&#9660;</div></div>
-        <div id="sinstock-list" class="mc-body" style="display:none;"><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>LECHE LA CAMPECHANA DESCREMADA CARTON X 1L (8U)</span><span style='color:#999;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>Aceite de girasol Bonanza 900cc</span><span style='color:#999;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>ACEITE DE GIRASOL EL ARGENTINO X 900ML (12U)</span><span style='color:#999;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>LECHE LA CAMPECHANA ENTERA CARTON X 1L (8U)</span><span style='color:#999;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>ARROZ LA CAMPECHANA 5/0 LARGO FINO X 1KG (10 UNIDADES)</span><span style='color:#999;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>LECHE ENTERA REINA DEL PRADO X 1 LTS (8 UNIDADES)</span><span style='color:#999;font-weight:700;white-space:nowrap;'>disp: 0</span></div><div style='display:flex;justify-content:space-between;align-items:center;padding:6px 2px;border-bottom:1px solid #f5f5f5;font-size:12px;'><span style='flex:1;margin-right:8px;'>AZUCAR DON ANDRES X 1KG</span><span style='color:#999;font-weight:700;white-space:nowrap;'>disp: 0</span></div></div>
-      </div>
-    </div>
-    <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
-      <input id="stock-search" type="text" placeholder="&#128269; Buscar producto..." oninput="filterStock()"
-        style="flex:1;min-width:200px;padding:9px 14px;border-radius:8px;border:2px solid #e0e0e0;font-size:13px;background:#fff;color:#222;outline:none;">
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button onclick="setStockEstado('',this)" class="festado active" style="padding:8px 14px;border-radius:8px;border:2px solid #1D9E75;background:#1D9E75;color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Todos</button>
-        <button onclick="setStockEstado('ok',this)" class="festado" style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">OK</button>
-        <button onclick="setStockEstado('bajo',this)" class="festado" style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">Bajo</button>
-        <button onclick="setStockEstado('critico',this)" class="festado" style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">Cr&iacute;tico</button>
-        <button onclick="setStockEstado('sinstock',this)" class="festado" style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">Sin Stock</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr">&#128203; Detalle por Producto &mdash; <span id="stock-count">13</span> productos</div>
-      <table id="tbl-stock">
-        <thead><tr><th>Producto</th><th style="text-align:right;">Stock Total</th><th style="text-align:right;">Pedidos</th><th style="text-align:right;">DISPONIBLE</th><th style="text-align:right;">Palets</th><th style="text-align:center;">Estado</th><th></th></tr></thead>
-        <tbody id='stock-head-1' data-estado='critico'><tr onclick='toggleStock(1)' style='cursor:pointer;background:#fff0f0;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#e09020;font-weight:700;">30.240</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#d94040;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>CRITICO</span></td>
-      <td style='padding:11px 10px;text-align:center;color:#bbb;'>&#9654;</td>
-    </tr></tbody>
-<tbody id='stock-det-1' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='7' style='padding:0 0 0 20px;'>
-  <table style='width:100%;border-collapse:collapse;'><thead><tr style='background:#eee;'><th style='padding:5px 14px;font-size:11px;color:#666;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1426</td><td style='padding:5px 14px;font-size:12px;'>Mega Union (Mega Union)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>17.280</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1390</td><td style='padding:5px 14px;font-size:12px;'>Cooperativa Almacor </td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>10.080</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1372</td><td style='padding:5px 14px;font-size:12px;'>Otto Krause (Super Otto)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>720</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1345</td><td style='padding:5px 14px;font-size:12px;'>Esteban Leal</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>720</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1147</td><td style='padding:5px 14px;font-size:12px;'>Andres Paredes</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>1.440</td></tr></tbody></table>
-</td></tr></tbody>
-<tbody id='stock-head-2' data-estado='critico'><tr onclick='toggleStock(2)' style='cursor:pointer;background:#fff0f0;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>ACEITE DE GIRASOL GOYE X 900ML (12U)</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#e09020;font-weight:700;">107.640</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#d94040;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>CRITICO</span></td>
-      <td style='padding:11px 10px;text-align:center;color:#bbb;'>&#9654;</td>
-    </tr></tbody>
-<tbody id='stock-det-2' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='7' style='padding:0 0 0 20px;'>
-  <table style='width:100%;border-collapse:collapse;'><thead><tr style='background:#eee;'><th style='padding:5px 14px;font-size:11px;color:#666;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1500</td><td style='padding:5px 14px;font-size:12px;'>Miguel Angel Herrero</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>16.380</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1422</td><td style='padding:5px 14px;font-size:12px;'>La Cumbre Sanjuanina</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>9.360</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1421</td><td style='padding:5px 14px;font-size:12px;'>Hernandez, Jose Luis</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>16.380</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1388</td><td style='padding:5px 14px;font-size:12px;'>La Cumbre Sanjuanina</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>32.760</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1387</td><td style='padding:5px 14px;font-size:12px;'>La Cumbre Sanjuanina</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>32.760</td></tr></tbody></table>
-</td></tr></tbody>
-<tbody id='stock-head-3' data-estado='critico'><tr onclick='toggleStock(3)' style='cursor:pointer;background:#fff0f0;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>BOLSAS DE AZUCAR X 50KG</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#e09020;font-weight:700;">3.560</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#d94040;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>CRITICO</span></td>
-      <td style='padding:11px 10px;text-align:center;color:#bbb;'>&#9654;</td>
-    </tr></tbody>
-<tbody id='stock-det-3' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='7' style='padding:0 0 0 20px;'>
-  <table style='width:100%;border-collapse:collapse;'><thead><tr style='background:#eee;'><th style='padding:5px 14px;font-size:11px;color:#666;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1591</td><td style='padding:5px 14px;font-size:12px;'>Blanco, Ricardo</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>1.000</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1574</td><td style='padding:5px 14px;font-size:12px;'>Jose Ferre</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>400</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1561</td><td style='padding:5px 14px;font-size:12px;'>Siriu De La Cocha, Sergio Gaus</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>560</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1428</td><td style='padding:5px 14px;font-size:12px;'>Jose Ferre</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>1.000</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1215</td><td style='padding:5px 14px;font-size:12px;'>Productos Calex Mendoza</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>600</td></tr></tbody></table>
-</td></tr></tbody>
-<tbody id='stock-head-4' data-estado='critico'><tr onclick='toggleStock(4)' style='cursor:pointer;background:#fff0f0;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>ACEITE DE GIRASOL LA CAMPECHANA X 900ML (12U)</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#e09020;font-weight:700;">32.760</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#d94040;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>CRITICO</span></td>
-      <td style='padding:11px 10px;text-align:center;color:#bbb;'>&#9654;</td>
-    </tr></tbody>
-<tbody id='stock-det-4' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='7' style='padding:0 0 0 20px;'>
-  <table style='width:100%;border-collapse:collapse;'><thead><tr style='background:#eee;'><th style='padding:5px 14px;font-size:11px;color:#666;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1426</td><td style='padding:5px 14px;font-size:12px;'>Mega Union (Mega Union)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>2.520</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1147</td><td style='padding:5px 14px;font-size:12px;'>Andres Paredes</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>30.240</td></tr></tbody></table>
-</td></tr></tbody>
-<tbody id='stock-head-5' data-estado='critico'><tr onclick='toggleStock(5)' style='cursor:pointer;background:#fff0f0;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>ACEITE DE GIRASOL LA CAMPECHANA 4L (4U)</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#e09020;font-weight:700;">5.760</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#d94040;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>CRITICO</span></td>
-      <td style='padding:11px 10px;text-align:center;color:#bbb;'>&#9654;</td>
-    </tr></tbody>
-<tbody id='stock-det-5' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='7' style='padding:0 0 0 20px;'>
-  <table style='width:100%;border-collapse:collapse;'><thead><tr style='background:#eee;'><th style='padding:5px 14px;font-size:11px;color:#666;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1422</td><td style='padding:5px 14px;font-size:12px;'>La Cumbre Sanjuanina</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>2.304</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1390</td><td style='padding:5px 14px;font-size:12px;'>Cooperativa Almacor </td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>3.456</td></tr></tbody></table>
-</td></tr></tbody>
-<tbody id='stock-head-6' data-estado='critico'><tr onclick='toggleStock(6)' style='cursor:pointer;background:#fff0f0;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>ACEITE DE GIRASOL LA CAMPECHANA X 5LTS (4U)</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#e09020;font-weight:700;">4.560</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#d94040;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#d94040;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>CRITICO</span></td>
-      <td style='padding:11px 10px;text-align:center;color:#bbb;'>&#9654;</td>
-    </tr></tbody>
-<tbody id='stock-det-6' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='7' style='padding:0 0 0 20px;'>
-  <table style='width:100%;border-collapse:collapse;'><thead><tr style='background:#eee;'><th style='padding:5px 14px;font-size:11px;color:#666;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1422</td><td style='padding:5px 14px;font-size:12px;'>La Cumbre Sanjuanina</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>1.200</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1382</td><td style='padding:5px 14px;font-size:12px;'>Mdp Cliente (Franco Mdp)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>3.360</td></tr></tbody></table>
-</td></tr></tbody>
-<tbody id='stock-head-7' data-estado='sinstock'><tr style='background:#f5f5f5;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>LECHE LA CAMPECHANA DESCREMADA CARTON X 1L (8U)</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#bbb">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#999;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>SIN STOCK</span></td>
-      <td></td>
-    </tr></tbody>
-<tbody id='stock-head-8' data-estado='sinstock'><tr style='background:#f5f5f5;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>Aceite de girasol Bonanza 900cc</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#bbb">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#999;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>SIN STOCK</span></td>
-      <td></td>
-    </tr></tbody>
-<tbody id='stock-head-9' data-estado='sinstock'><tr style='background:#f5f5f5;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>ACEITE DE GIRASOL EL ARGENTINO X 900ML (12U)</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#bbb">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#999;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>SIN STOCK</span></td>
-      <td></td>
-    </tr></tbody>
-<tbody id='stock-head-10' data-estado='sinstock'><tr style='background:#f5f5f5;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>LECHE LA CAMPECHANA ENTERA CARTON X 1L (8U)</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#bbb">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#999;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>SIN STOCK</span></td>
-      <td></td>
-    </tr></tbody>
-<tbody id='stock-head-11' data-estado='sinstock'><tr style='background:#f5f5f5;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>ARROZ LA CAMPECHANA 5/0 LARGO FINO X 1KG (10 UNIDADES)</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#bbb">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#999;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>SIN STOCK</span></td>
-      <td></td>
-    </tr></tbody>
-<tbody id='stock-head-12' data-estado='sinstock'><tr style='background:#f5f5f5;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>LECHE ENTERA REINA DEL PRADO X 1 LTS (8 UNIDADES)</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#bbb">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#999;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>SIN STOCK</span></td>
-      <td></td>
-    </tr></tbody>
-<tbody id='stock-head-13' data-estado='sinstock'><tr style='background:#f5f5f5;border-bottom:1px solid #eee;'>
-      <td style='padding:11px 14px;font-weight:600;font-size:13px;'>AZUCAR DON ANDRES X 1KG</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:13px;'><span style="color:#bbb">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'>0</td>
-      <td style='padding:11px 14px;text-align:right;font-size:15px;font-weight:800;color:#999;'><span style="color:#bbb;font-size:13px;font-weight:400;">&mdash;</span></td>
-      <td style='padding:11px 14px;text-align:center;'><span style='background:#999;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;'>SIN STOCK</span></td>
-      <td></td>
-    </tr></tbody>
-
-      </table>
-    </div>
-  </div>
-
-  <div id="tab-pedidos" class="tab-content">
+  <div id="tab-pedidos" class="tab-content active">
     <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
       <input id="ped-search" type="text" placeholder="&#128269; Buscar por # pedido o cliente..." oninput="filterPedidos()"
         style="flex:1;min-width:200px;padding:9px 14px;border-radius:8px;border:2px solid #e0e0e0;font-size:13px;background:#fff;color:#222;outline:none;">
       <div style="display:flex;gap:6px;">
-        <button onclick="setPedTipo('',this)" class="ftipo active" style="padding:8px 14px;border-radius:8px;border:2px solid #1D9E75;background:#1D9E75;color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Todos</button>
-        <button onclick="setPedTipo('retiro',this)" class="ftipo" style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">Retiro</button>
-        <button onclick="setPedTipo('mayorista',this)" class="ftipo" style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">Mayorista</button>
+        <button onclick="setPedDeposito('',this)" class="ftipo active" style="padding:8px 14px;border-radius:8px;border:2px solid #1D9E75;background:#1D9E75;color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Todos</button>
+        <button onclick="setPedDeposito('tablada',this)" class="ftipo" style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">La Tablada</button>
+        <button onclick="setPedDeposito('rojas',this)" class="ftipo" style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">Proyecto Rojas</button>
+        <button onclick="setPedDeposito('venta directa',this)" class="ftipo" style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">Venta Directa</button>
       </div>
     </div>
     <div class="card">
-      <div class="card-hdr">Pedidos Activos La Tablada / Proyecto Rojas / Venta Directa &mdash; 16 pedidos &nbsp;<small style="font-weight:400;color:#aaa;">(clic en fila para ver productos)</small></div>
+      <div class="card-hdr">Pedidos Activos La Tablada / Proyecto Rojas / Venta Directa &mdash; 14 pedidos &nbsp;<small style="font-weight:400;color:#aaa;">(clic en fila para ver productos)</small></div>
       <div style="overflow-x:auto;">
       <table id="tbl-pedidos">
         <thead><tr>
@@ -257,24 +102,7 @@ tbody tr:hover{background:#f9f9f9;}
           <th>Dep&oacute;sito</th><th>Transportista</th><th style="text-align:right;">Total</th>
           <th style="text-align:center;">Estado</th><th>Tipo</th><th></th>
         </tr></thead>
-        <tbody id='p-head-1' data-tipo='Cruzada con una compra'><tr onclick='toggle(1)' style='cursor:pointer;border-bottom:1px solid #eee;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1591' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1591</a></td>
-  <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-09-01</td>
-  <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Blanco, Ricardo</td>
-  <td style='padding:10px 14px;font-size:12px;color:#888;'>Leandro</td>
-  <td style='padding:10px 14px;font-size:12px;'>tucuman - Tucumán</td>
-  <td style='padding:10px 14px;font-size:12px;'>Venta Directa</td>
-  <td style='padding:10px 14px;font-size:12px;'>Sin asignar</td>
-  <td style='padding:10px 14px;font-weight:700;text-align:right;'>$ 35.000.000</td>
-  <td style='padding:10px 14px;text-align:center;'><span style='background:#1D9E75;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;'>APROBADO</span></td>
-  <td style='padding:10px 14px;font-size:12px;'>Cruzada con una compra</td>
-  <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
-</tr></tbody>
-<tbody id='p-det-1' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
-  <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>tucuman</td></tr></table>
-  <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>BOLSAS DE AZUCAR X 50KG</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>1.000</td></tr></tbody></table>
-</td></tr></tbody>
-<tbody id='p-head-2' data-tipo='Entrega directa'><tr onclick='toggle(2)' style='cursor:pointer;border-bottom:1px solid #eee;'>
+        <tbody id='p-head-1' data-tipo='Entrega directa' data-deposito='venta directa'><tr onclick='toggle(1)' style='cursor:pointer;border-bottom:1px solid #eee;'>
   <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1574' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1574</a></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-28</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Jose Ferre</td>
@@ -287,28 +115,11 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-2' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-1' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>los vallistas tucuman</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>BOLSAS DE AZUCAR X 50KG</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>400</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-3' data-tipo='Entrega directa'><tr onclick='toggle(3)' style='cursor:pointer;border-bottom:1px solid #eee;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1561' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1561</a></td>
-  <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-28</td>
-  <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Siriu De La Cocha, Sergio Gaus</td>
-  <td style='padding:10px 14px;font-size:12px;color:#888;'>Franco Manfrino</td>
-  <td style='padding:10px 14px;font-size:12px;'>pilar - Buenos Aires</td>
-  <td style='padding:10px 14px;font-size:12px;'>Venta Directa</td>
-  <td style='padding:10px 14px;font-size:12px;'>Sin asignar</td>
-  <td style='padding:10px 14px;font-weight:700;text-align:right;'>$ 23.640.109</td>
-  <td style='padding:10px 14px;text-align:center;'><span style='background:#8338ec;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;'>PROGRAMADO</span></td>
-  <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
-  <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
-</tr></tbody>
-<tbody id='p-det-3' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
-  <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>AGOTE 515 , PILAR</td></tr></table>
-  <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>BOLSAS DE AZUCAR X 50KG</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>560</td></tr></tbody></table>
-</td></tr></tbody>
-<tbody id='p-head-4' data-tipo='Entrega directa'><tr onclick='toggle(4)' style='cursor:pointer;border-bottom:1px solid #eee;'>
+<tbody id='p-head-2' data-tipo='Entrega directa' data-deposito='la tablada'><tr onclick='toggle(2)' style='cursor:pointer;border-bottom:1px solid #eee;'>
   <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1500' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1500</a></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-25</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Miguel Angel Herrero</td>
@@ -321,12 +132,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-4' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-2' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>san juan</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL GOYE X 900ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>16.380</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-5' data-tipo='Cruzada con una compra'><tr onclick='toggle(5)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1428' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1428</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 12 dias</small></td>
+<tbody id='p-head-3' data-tipo='Cruzada con una compra' data-deposito='venta directa'><tr onclick='toggle(3)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1428' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1428</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 13 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-20</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Jose Ferre</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Benjamin Touss</td>
@@ -338,12 +149,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Cruzada con una compra</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-5' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-3' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>los vallistas tucuman</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>BOLSAS DE AZUCAR X 50KG</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>1.000</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-6' data-tipo='Entrega directa'><tr onclick='toggle(6)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1426' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1426</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 12 dias</small></td>
+<tbody id='p-head-4' data-tipo='Entrega directa' data-deposito='la tablada'><tr onclick='toggle(4)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1426' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1426</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 13 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-20</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Mega Union (Mega Union)</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Franco Manfrino</td>
@@ -355,12 +166,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-6' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-4' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>Colectora Ruta Provincial 36 3651, Bosques Centro, Bosques, Partido de Florencio Varela, Buenos Aires, 1889, Argentina</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>17.280</td></tr><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA X 900ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>2.520</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-7' data-tipo='Entrega directa'><tr onclick='toggle(7)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1422' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1422</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 12 dias</small></td>
+<tbody id='p-head-5' data-tipo='Entrega directa' data-deposito='la tablada'><tr onclick='toggle(5)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1422' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1422</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 13 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-20</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>La Cumbre Sanjuanina</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Ricardo Calvo</td>
@@ -372,12 +183,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-7' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-5' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>LATERAL SUR ESTE, AV. CIRCUNVALACION 1513 SUR SAN JUAN</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL GOYE X 900ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>9.360</td></tr><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA X 5LTS (4U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>1.200</td></tr><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA 4L (4U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>2.304</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-8' data-tipo='Entrega directa'><tr onclick='toggle(8)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1421' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1421</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 12 dias</small></td>
+<tbody id='p-head-6' data-tipo='Entrega directa' data-deposito='la tablada'><tr onclick='toggle(6)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1421' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1421</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 13 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-20</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Hernandez, Jose Luis</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Ricardo Calvo</td>
@@ -389,12 +200,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-8' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-6' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>san juan</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL GOYE X 900ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>16.380</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-9' data-tipo='Entrega directa'><tr onclick='toggle(9)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1390' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1390</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 13 dias</small></td>
+<tbody id='p-head-7' data-tipo='Entrega directa' data-deposito='la tablada'><tr onclick='toggle(7)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1390' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1390</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 14 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-19</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Cooperativa Almacor </td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Diego Krañansky</td>
@@ -406,12 +217,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-9' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-7' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>Av Velez Sarsfield 4340</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA 4L (4U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>3.456</td></tr><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>10.080</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-10' data-tipo='Entrega directa'><tr onclick='toggle(10)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1388' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1388</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 13 dias</small></td>
+<tbody id='p-head-8' data-tipo='Entrega directa' data-deposito='la tablada'><tr onclick='toggle(8)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1388' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1388</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 14 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-19</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>La Cumbre Sanjuanina</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Ricardo Calvo</td>
@@ -423,12 +234,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-10' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-8' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>LATERAL SUR ESTE, AV. CIRCUNVALACION 1513 SUR SAN JUAN</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL GOYE X 900ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>32.760</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-11' data-tipo='Entrega directa'><tr onclick='toggle(11)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1387' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1387</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 13 dias</small></td>
+<tbody id='p-head-9' data-tipo='Entrega directa' data-deposito='la tablada'><tr onclick='toggle(9)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1387' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1387</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 14 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-19</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>La Cumbre Sanjuanina</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Ricardo Calvo</td>
@@ -440,12 +251,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-11' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-9' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>LATERAL SUR ESTE, AV. CIRCUNVALACION 1513 SUR SAN JUAN</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL GOYE X 900ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>32.760</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-12' data-tipo='Entrega directa'><tr onclick='toggle(12)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1382' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1382</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 14 dias</small></td>
+<tbody id='p-head-10' data-tipo='Entrega directa' data-deposito='la tablada'><tr onclick='toggle(10)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1382' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1382</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 15 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-18</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Mdp Cliente (Franco Mdp)</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Cecilia Lagorio</td>
@@ -457,12 +268,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-12' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-10' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>3122, Mariano Acosta, Regional, Mar del Plata, Partido de General Pueyrredon, Buenos Aires, 7600, Argentina</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA X 5LTS (4U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>3.360</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-13' data-tipo='Retiro en Depósito'><tr onclick='toggle(13)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1372' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1372</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 14 dias</small></td>
+<tbody id='p-head-11' data-tipo='Retiro en Depósito' data-deposito='la tablada'><tr onclick='toggle(11)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1372' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1372</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 15 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-18</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Otto Krause (Super Otto)</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Jonathan Perez</td>
@@ -474,12 +285,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Retiro en Depósito</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-13' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-11' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>Isidro Casanova, Partido de La Matanza, Buenos Aires, 1675, Argentina</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>720</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-14' data-tipo='Retiro en Depósito'><tr onclick='toggle(14)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1345' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1345</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 18 dias</small></td>
+<tbody id='p-head-12' data-tipo='Retiro en Depósito' data-deposito='la tablada'><tr onclick='toggle(12)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1345' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1345</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 19 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-14</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Esteban Leal</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Jonathan Perez</td>
@@ -491,12 +302,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Retiro en Depósito</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-14' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-12' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>a</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>720</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-15' data-tipo='Entrega directa'><tr onclick='toggle(15)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1215' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1215</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 28 dias</small></td>
+<tbody id='p-head-13' data-tipo='Entrega directa' data-deposito='venta directa'><tr onclick='toggle(13)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1215' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1215</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 29 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-08-04</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Productos Calex Mendoza</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Brian Pianovii</td>
@@ -508,12 +319,12 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'>Entrega directa</td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-15' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-13' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>GENERAL ALVEAR - ALBOX Y PTE ILLIA</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>BOLSAS DE AZUCAR X 50KG</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>600</td></tr></tbody></table>
 </td></tr></tbody>
-<tbody id='p-head-16' data-tipo=''><tr onclick='toggle(16)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
-  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1147' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1147</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 33 dias</small></td>
+<tbody id='p-head-14' data-tipo='' data-deposito='la tablada'><tr onclick='toggle(14)' style='cursor:pointer;border-bottom:1px solid #eee;background:#fffaf5;'>
+  <td style='padding:10px 14px;font-weight:700;'><a href='https://gestionlacampechana.com.ar/pedidos/1147' target='_blank' rel='noopener' onclick='event.stopPropagation()' style='color:#3a86ff;text-decoration:none;' title='Ver e imprimir el pedido original'>#1147</a><br><small style='color:#e09020;font-size:10px;font-weight:600;'>&#9888; 34 dias</small></td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>2026-07-30</td>
   <td style='padding:10px 14px;font-weight:600;font-size:13px;'>Andres Paredes</td>
   <td style='padding:10px 14px;font-size:12px;color:#888;'>Federico Hernandez</td>
@@ -525,41 +336,11 @@ tbody tr:hover{background:#f9f9f9;}
   <td style='padding:10px 14px;font-size:12px;'></td>
   <td style='padding:10px 14px;text-align:center;color:#bbb;'>&#9654;</td>
 </tr></tbody>
-<tbody id='p-det-16' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
+<tbody id='p-det-14' style='display:none;'><tr style='background:#f8f9fa;'><td colspan='11' style='padding:10px 10px 10px 30px;'>
   <table style='width:100%;border-collapse:collapse;margin-bottom:10px;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><tr><td style='padding:6px 14px;font-size:12px;color:#888;font-weight:600;width:130px;'>&#128205; Direcci&oacute;n</td><td style='padding:6px 14px;font-size:12px;'>Av Hipolito Yrigoyrn 334 Palpala</td></tr></table>
   <table style='width:100%;border-collapse:collapse;margin:0;'><thead><tr style='background:#eee;'><th style='padding:6px 14px;font-size:11px;text-align:left;color:#666;font-weight:700;'>Producto</th><th style='padding:6px 14px;font-size:11px;text-align:right;color:#666;font-weight:700;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>1.440</td></tr><tr><td style='padding:5px 14px;font-size:12px;'>ACEITE DE GIRASOL LA CAMPECHANA X 900ML (12U)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:600;'>30.240</td></tr></tbody></table>
 </td></tr></tbody>
 
-      </table>
-      </div>
-    </div>
-  </div>
-
-  <div id="tab-retiro" class="tab-content">
-    <div class="card">
-      <div class="card-hdr">Retiro en Dep&oacute;sito &mdash; <span id="cnt-retiro">0</span> pedidos</div>
-      <div style="overflow-x:auto;">
-      <table id="tbl-retiro">
-        <thead><tr>
-          <th>#</th><th>Fecha</th><th>Cliente</th><th>Vendedor</th><th>Localidad</th>
-          <th>Dep&oacute;sito</th><th>Transportista</th><th style="text-align:right;">Total</th>
-          <th style="text-align:center;">Estado</th><th>Tipo</th><th></th>
-        </tr></thead>
-      </table>
-      </div>
-    </div>
-  </div>
-
-  <div id="tab-mayoristas" class="tab-content">
-    <div class="card">
-      <div class="card-hdr">Mayoristas &mdash; <span id="cnt-may-mayorista">0</span> pedidos</div>
-      <div style="overflow-x:auto;">
-      <table id="tbl-mayoristas-mayorista">
-        <thead><tr>
-          <th>#</th><th>Fecha</th><th>Cliente</th><th>Vendedor</th><th>Localidad</th>
-          <th>Dep&oacute;sito</th><th>Transportista</th><th style="text-align:right;">Total</th>
-          <th style="text-align:center;">Estado</th><th>Tipo</th><th></th>
-        </tr></thead>
       </table>
       </div>
     </div>
@@ -580,60 +361,70 @@ tbody tr:hover{background:#f9f9f9;}
     </div>
   </div>
 
-  <div id="tab-alertas" class="tab-content">
-    <div class="card">
-      <div class="card-hdr">&#9888; Productos a reponer &mdash; 0 productos bajo m&iacute;nimo requerido</div>
-      <table>
-        <thead><tr><th>Producto</th><th style="text-align:right;">Stock Total</th><th style="text-align:right;">Disponible</th><th style="text-align:right;">M&iacute;nimo Requerido</th><th style="text-align:right;">FALTA PEDIR</th><th style="text-align:center;">Urgencia</th></tr></thead>
-        <tbody><tr><td colspan='6' style='padding:20px;text-align:center;color:#1D9E75;font-weight:700;'>&#9989; Todos los productos est&aacute;n sobre el m&iacute;nimo requerido</td></tr></tbody>
-      </table>
+  <div id="tab-depprod" class="tab-content">
+    <div class='card' style='margin-bottom:16px;'>
+      <div class='card-hdr'>&#127970; La tablada &mdash; 5 producto(s) distintos</div>
+      <div style='padding:8px 18px;'><div style='border-bottom:1px solid #f5f5f5;'>
+        <div onclick="toggleDepProd(1)" style='cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:7px 2px;font-size:13px;'>
+          <span style='flex:1;'>ACEITE DE GIRASOL GOYE X 900ML (12U)</span>
+          <span style='color:#bbb;margin-right:10px;'>&#9654;</span>
+          <span style='font-weight:700;color:#3a86ff;'>107.640</span>
+        </div>
+        <div id='depprod-det-1' style='display:none;padding:0 0 8px 14px;'>
+          <table style='width:100%;border-collapse:collapse;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><thead><tr style='background:#dde8ff;'><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1500</td><td style='padding:5px 14px;font-size:12px;'>Miguel Angel Herrero</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>16.380</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1422</td><td style='padding:5px 14px;font-size:12px;'>La Cumbre Sanjuanina</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>9.360</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1421</td><td style='padding:5px 14px;font-size:12px;'>Hernandez, Jose Luis</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>16.380</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1388</td><td style='padding:5px 14px;font-size:12px;'>La Cumbre Sanjuanina</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>32.760</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1387</td><td style='padding:5px 14px;font-size:12px;'>La Cumbre Sanjuanina</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>32.760</td></tr></tbody></table>
+        </div>
+      </div><div style='border-bottom:1px solid #f5f5f5;'>
+        <div onclick="toggleDepProd(2)" style='cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:7px 2px;font-size:13px;'>
+          <span style='flex:1;'>ACEITE DE GIRASOL LA CAMPECHANA 4L (4U)</span>
+          <span style='color:#bbb;margin-right:10px;'>&#9654;</span>
+          <span style='font-weight:700;color:#3a86ff;'>5.760</span>
+        </div>
+        <div id='depprod-det-2' style='display:none;padding:0 0 8px 14px;'>
+          <table style='width:100%;border-collapse:collapse;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><thead><tr style='background:#dde8ff;'><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1422</td><td style='padding:5px 14px;font-size:12px;'>La Cumbre Sanjuanina</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>2.304</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1390</td><td style='padding:5px 14px;font-size:12px;'>Cooperativa Almacor </td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>3.456</td></tr></tbody></table>
+        </div>
+      </div><div style='border-bottom:1px solid #f5f5f5;'>
+        <div onclick="toggleDepProd(3)" style='cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:7px 2px;font-size:13px;'>
+          <span style='flex:1;'>ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)</span>
+          <span style='color:#bbb;margin-right:10px;'>&#9654;</span>
+          <span style='font-weight:700;color:#3a86ff;'>30.240</span>
+        </div>
+        <div id='depprod-det-3' style='display:none;padding:0 0 8px 14px;'>
+          <table style='width:100%;border-collapse:collapse;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><thead><tr style='background:#dde8ff;'><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1426</td><td style='padding:5px 14px;font-size:12px;'>Mega Union (Mega Union)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>17.280</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1390</td><td style='padding:5px 14px;font-size:12px;'>Cooperativa Almacor </td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>10.080</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1372</td><td style='padding:5px 14px;font-size:12px;'>Otto Krause (Super Otto)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>720</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1345</td><td style='padding:5px 14px;font-size:12px;'>Esteban Leal</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>720</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1147</td><td style='padding:5px 14px;font-size:12px;'>Andres Paredes</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>1.440</td></tr></tbody></table>
+        </div>
+      </div><div style='border-bottom:1px solid #f5f5f5;'>
+        <div onclick="toggleDepProd(4)" style='cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:7px 2px;font-size:13px;'>
+          <span style='flex:1;'>ACEITE DE GIRASOL LA CAMPECHANA X 5LTS (4U)</span>
+          <span style='color:#bbb;margin-right:10px;'>&#9654;</span>
+          <span style='font-weight:700;color:#3a86ff;'>4.560</span>
+        </div>
+        <div id='depprod-det-4' style='display:none;padding:0 0 8px 14px;'>
+          <table style='width:100%;border-collapse:collapse;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><thead><tr style='background:#dde8ff;'><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1422</td><td style='padding:5px 14px;font-size:12px;'>La Cumbre Sanjuanina</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>1.200</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1382</td><td style='padding:5px 14px;font-size:12px;'>Mdp Cliente (Franco Mdp)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>3.360</td></tr></tbody></table>
+        </div>
+      </div><div style='border-bottom:1px solid #f5f5f5;'>
+        <div onclick="toggleDepProd(5)" style='cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:7px 2px;font-size:13px;'>
+          <span style='flex:1;'>ACEITE DE GIRASOL LA CAMPECHANA X 900ML (12U)</span>
+          <span style='color:#bbb;margin-right:10px;'>&#9654;</span>
+          <span style='font-weight:700;color:#3a86ff;'>32.760</span>
+        </div>
+        <div id='depprod-det-5' style='display:none;padding:0 0 8px 14px;'>
+          <table style='width:100%;border-collapse:collapse;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><thead><tr style='background:#dde8ff;'><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1426</td><td style='padding:5px 14px;font-size:12px;'>Mega Union (Mega Union)</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>2.520</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1147</td><td style='padding:5px 14px;font-size:12px;'>Andres Paredes</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>30.240</td></tr></tbody></table>
+        </div>
+      </div></div>
+    </div><div class='card' style='margin-bottom:16px;'>
+      <div class='card-hdr'>&#127970; Venta Directa &mdash; 1 producto(s) distintos</div>
+      <div style='padding:8px 18px;'><div style='border-bottom:1px solid #f5f5f5;'>
+        <div onclick="toggleDepProd(6)" style='cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:7px 2px;font-size:13px;'>
+          <span style='flex:1;'>BOLSAS DE AZUCAR X 50KG</span>
+          <span style='color:#bbb;margin-right:10px;'>&#9654;</span>
+          <span style='font-weight:700;color:#3a86ff;'>2.000</span>
+        </div>
+        <div id='depprod-det-6' style='display:none;padding:0 0 8px 14px;'>
+          <table style='width:100%;border-collapse:collapse;background:#eef3ff;border-radius:6px;border:1px solid #d0dcff;'><thead><tr style='background:#dde8ff;'><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>#Pedido</th><th style='padding:5px 14px;font-size:11px;color:#666;text-align:left;'>Cliente</th><th style='padding:5px 14px;font-size:11px;text-align:right;color:#666;'>Cantidad</th></tr></thead><tbody><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1574</td><td style='padding:5px 14px;font-size:12px;'>Jose Ferre</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>400</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1428</td><td style='padding:5px 14px;font-size:12px;'>Jose Ferre</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>1.000</td></tr><tr><td style='padding:5px 14px;font-size:12px;font-weight:700;color:#3a86ff;'>#1215</td><td style='padding:5px 14px;font-size:12px;'>Productos Calex Mendoza</td><td style='padding:5px 14px;text-align:right;font-size:12px;font-weight:700;color:#e09020;'>600</td></tr></tbody></table>
+        </div>
+      </div></div>
     </div>
   </div>
 
-  <div id="tab-encamino" class="tab-content">
-    <div class='card'><div style='padding:20px;text-align:center;color:#aaa;'>No hay pedidos en camino</div></div>
-  </div>
-
-  <div id="tab-control" class="tab-content">
-    <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
-      <input id="ctrl-search" type="text" placeholder="&#128269; Buscar producto..." oninput="filterControl()"
-        style="flex:1;min-width:200px;padding:9px 14px;border-radius:8px;border:2px solid #e0e0e0;font-size:13px;background:#fff;color:#222;outline:none;">
-      <button id="btn-solo-diff" onclick="toggleSoloDiff(this)"
-        style="padding:8px 14px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer;">
-        &#9651; Solo diferencias
-      </button>
-      <button id="btn-ocultar-cero" onclick="toggleOcultarCero(this)"
-        style="padding:8px 14px;border-radius:8px;border:2px solid #3a86ff;background:#3a86ff;color:#fff;font-size:12px;font-weight:700;cursor:pointer;">
-        &#128683; Ocultar stock 0
-      </button>
-      <button onclick="printControl()"
-        style="padding:8px 14px;border-radius:8px;border:2px solid #3a86ff;background:#fff;color:#3a86ff;font-size:12px;font-weight:700;cursor:pointer;">
-        &#128438; Imprimir planilla
-      </button>
-      <button onclick="resetControl()"
-        style="padding:8px 14px;border-radius:8px;border:2px solid #d94040;background:#fff;color:#d94040;font-size:12px;font-weight:700;cursor:pointer;">
-        &#8635; Reiniciar conteo
-      </button>
-    </div>
-    <div class="card">
-      <div class="card-hdr" style="display:flex;justify-content:space-between;align-items:center;">
-        <span>&#9745; Control de Stock F&iacute;sico</span>
-        <span id="ctrl-fecha" style="font-size:12px;font-weight:400;color:#aaa;"></span>
-      </div>
-      <div style="overflow-x:auto;">
-      <table id="tbl-control">
-        <thead><tr>
-          <th>Producto</th>
-          <th style="text-align:right;">Sistema</th>
-          <th style="text-align:right;">Conteo F&iacute;sico</th>
-          <th style="text-align:right;">DIFERENCIA</th>
-          <th style="text-align:center;">Estado</th>
-        </tr></thead>
-        <tbody id="ctrl-body"></tbody>
-      </table>
-      </div>
-    </div>
-  </div>
 </div>
 <script>
 function toggleCard(id,card){
@@ -651,9 +442,9 @@ function showTab(id,btn){
 }
 function toggle(i){var d=document.getElementById('p-det-'+i);if(d)d.style.display=d.style.display==='none'?'table-row-group':'none';}
 function toggleStock(i){var d=document.getElementById('stock-det-'+i);if(d)d.style.display=d.style.display==='none'?'table-row-group':'none';}
-var _pedTipo='';
-function setPedTipo(t,btn){
-  _pedTipo=t;
+var _pedDeposito='';
+function setPedDeposito(d,btn){
+  _pedDeposito=d;
   document.querySelectorAll('.ftipo').forEach(function(b){b.style.background='#fff';b.style.color='#666';b.style.borderColor='#e0e0e0';});
   btn.style.background='#1D9E75';btn.style.color='#fff';btn.style.borderColor='#1D9E75';
   filterPedidos();
@@ -664,10 +455,10 @@ function filterPedidos(){
     var cells=tb.querySelectorAll('td');
     var num=cells[0]?cells[0].textContent.toLowerCase():'';
     var cli=cells[2]?cells[2].textContent.toLowerCase():'';
-    var tipo=(tb.getAttribute('data-tipo')||'').toLowerCase();
+    var deposito=(tb.getAttribute('data-deposito')||'').toLowerCase();
     var mQ=!q||num.indexOf(q)>=0||cli.indexOf(q)>=0;
-    var mT=!_pedTipo||(_pedTipo==='mayorista'?isMayorista(tipo):tipo.indexOf(_pedTipo)>=0);
-    var show=mQ&&mT;
+    var mD=!_pedDeposito||deposito.indexOf(_pedDeposito)>=0;
+    var show=mQ&&mD;
     tb.style.display=show?'':'none';
     var idx=tb.id.replace('p-head-','');
     var det=document.getElementById('p-det-'+idx);
@@ -704,6 +495,7 @@ function isEntregaDirecta(tipo){return tipo.indexOf('entrega directa')>=0;}
 function isSoloMayorista(tipo){return tipo.indexOf('mayorista')>=0&&tipo.indexOf('entrega directa')<0;}
 function isRetiro(tipo){return tipo.indexOf('retiro')>=0;}
 function toggleClone(prefix,i){var d=document.getElementById(prefix+'-det-'+i);if(d)d.style.display=d.style.display==='none'?'table-row-group':'none';}
+function toggleDepProd(i){var d=document.getElementById('depprod-det-'+i);if(d)d.style.display=d.style.display==='none'?'block':'none';}
 function poblarPorTipo(tblId,prefix,matchFn,cntId){
   var tbl=document.getElementById(tblId);
   if(!tbl)return;
@@ -726,11 +518,20 @@ function poblarPorTipo(tblId,prefix,matchFn,cntId){
   if(cnt)cnt.textContent=mi;
 }
 (function(){
-  poblarPorTipo('tbl-mayoristas-mayorista','pmm',isSoloMayorista,'cnt-may-mayorista');
   poblarPorTipo('tbl-entregas','ed',isEntregaDirecta,'cnt-entregas');
-  poblarPorTipo('tbl-retiro','rt',isRetiro,'cnt-retiro');
 })();
-var PRODUCTOS=[{n:'ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)',s:0},{n:'ACEITE DE GIRASOL GOYE X 900ML (12U)',s:0},{n:'BOLSAS DE AZUCAR X 50KG',s:0},{n:'ACEITE DE GIRASOL LA CAMPECHANA X 900ML (12U)',s:0},{n:'ACEITE DE GIRASOL LA CAMPECHANA 4L (4U)',s:0},{n:'ACEITE DE GIRASOL LA CAMPECHANA X 5LTS (4U)',s:0},{n:'LECHE LA CAMPECHANA DESCREMADA CARTON X 1L (8U)',s:0},{n:'Aceite de girasol Bonanza 900cc',s:0},{n:'ACEITE DE GIRASOL EL ARGENTINO X 900ML (12U)',s:0},{n:'LECHE LA CAMPECHANA ENTERA CARTON X 1L (8U)',s:0},{n:'ARROZ LA CAMPECHANA 5/0 LARGO FINO X 1KG (10 UNIDADES)',s:0},{n:'LECHE ENTERA REINA DEL PRADO X 1 LTS (8 UNIDADES)',s:0},{n:'AZUCAR DON ANDRES X 1KG',s:0},];
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  try{localStorage.setItem('theme_otros', t);}catch(e){}
+  var btn=document.getElementById('theme-toggle');
+  if(btn) btn.innerHTML = t==='dark' ? '&#9728; Modo claro' : '&#127769; Modo oscuro';
+}
+function toggleTheme(){
+  var cur=document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+  applyTheme(cur);
+}
+applyTheme(document.documentElement.getAttribute('data-theme')||'light');
+var PRODUCTOS=[{n:'ACEITE DE GIRASOL LA CAMPECHANA X 1,5ML (12U)',s:0},{n:'ACEITE DE GIRASOL GOYE X 900ML (12U)',s:0},{n:'BOLSAS DE AZUCAR X 50KG',s:-560},{n:'ACEITE DE GIRASOL LA CAMPECHANA X 900ML (12U)',s:0},{n:'ACEITE DE GIRASOL LA CAMPECHANA 4L (4U)',s:0},{n:'ACEITE DE GIRASOL LA CAMPECHANA X 5LTS (4U)',s:0},{n:'LECHE LA CAMPECHANA DESCREMADA CARTON X 1L (8U)',s:0},{n:'Aceite de girasol Bonanza 900cc',s:0},{n:'ACEITE DE GIRASOL EL ARGENTINO X 900ML (12U)',s:0},{n:'LECHE LA CAMPECHANA ENTERA CARTON X 1L (8U)',s:0},{n:'ARROZ LA CAMPECHANA 5/0 LARGO FINO X 1KG (10 UNIDADES)',s:0},{n:'LECHE ENTERA REINA DEL PRADO X 1 LTS (8 UNIDADES)',s:0},{n:'AZUCAR DON ANDRES X 1KG',s:0},];
 var _ctrlData={};
 var _soloDiff=false;
 var _ocultarCero=true;
