@@ -482,6 +482,7 @@ footer .foot-note{font-size:11.5px; color:var(--ink-faint);}
         <button type="button" class="nav-item active" data-target="apartado-reparto"><span class="dot"></span>&#128666; Reparto Mayorista</button>
         <button type="button" class="nav-item" data-target="apartado-analisis"><span class="dot"></span>&#128202; An&aacute;lisis</button>
         <button type="button" class="nav-item" data-target="apartado-entregas"><span class="dot"></span>&#128230; Entregas Directas</button>
+        <button type="button" class="nav-item" data-target="apartado-azucar"><span class="dot"></span>&#128717;&#65039; Az&uacute;car Copells</button>
         <button type="button" class="nav-item" data-target="apartado-sinclasificar"><span class="dot"></span>&#128194; Sin Clasificar</button>
       </div>
     </div>
@@ -870,6 +871,80 @@ footer .foot-note{font-size:11.5px; color:var(--ink-faint);}
   </div>
   </div>
 
+  <div class="apartado-content" id="apartado-azucar" style="display:none;">
+  <div class="wrap">
+  <div class="masthead">
+    <div>
+      <h1>Az&uacute;car Copells</h1>
+      <div class="sub">Env&iacute;os de bolsas de az&uacute;car x50kg a dep&oacute;sito Copells &mdash; aparte de las entregas directas</div>
+    </div>
+    <div class="masthead-right">
+      <div class="seg-control theme-toggle-inline">
+        <button type="button" class="seg-btn" data-theme-choice="light" title="Tema claro">&#9728;&#65039;</button>
+        <button type="button" class="seg-btn" data-theme-choice="dark" title="Tema oscuro">&#9789;&#65039;</button>
+      </div>
+      <div class="plate plate-date">--</div>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <div class="card full">
+      <h2>Gasto en az&uacute;car, por mes</h2>
+      <p class="hint">Total pagado por env&iacute;os de az&uacute;car a Copells, mes a mes.</p>
+      <div id="azucarChart"></div>
+    </div>
+
+    <div class="card full">
+      <h2>Resumen por dep&oacute;sito de origen</h2>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Dep&oacute;sito</th>
+              <th class="num">Env&iacute;os</th>
+              <th class="num">Total gastado</th>
+              <th class="num">Promedio por env&iacute;o</th>
+            </tr>
+          </thead>
+          <tbody id="azucarDepositoBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card full">
+      <h2>Historial de env&iacute;os de az&uacute;car</h2>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Dep&oacute;sito origen</th>
+              <th>Referencia</th>
+              <th class="num">Pagado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="azucarHistoryBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="azucarHistoryPagination"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="foot-note">Los datos quedan guardados en este navegador (este equipo).</div>
+    <div class="btn-row">
+      <button class="btn-ghost btn-small" id="azucarExportBtn">Exportar datos (.json)</button>
+      <label class="btn-ghost btn-small" style="cursor:pointer;">Importar
+        <input type="file" id="azucarImportInput" accept="application/json" style="display:none;">
+      </label>
+    </div>
+  </footer>
+  </div>
+  </div>
+
   <div class="apartado-content" id="apartado-sinclasificar" style="display:none;">
   <div class="wrap">
   <div class="masthead">
@@ -943,6 +1018,7 @@ document.querySelectorAll('#navList .nav-item[data-target]').forEach(btn=>{
     });
     if(btn.dataset.target === 'apartado-analisis'){ renderCharts(); }
     if(btn.dataset.target === 'apartado-entregas'){ renderEntregas(); }
+    if(btn.dataset.target === 'apartado-azucar'){ renderAzucar(); }
     if(btn.dataset.target === 'apartado-sinclasificar'){ renderSinClasificar(); }
   });
 });
@@ -2120,6 +2196,185 @@ document.getElementById('entregaImportInput').addEventListener('change', (e)=>{
 
 renderEntregas();
 
+// ---- Az&uacute;car Copells ----
+const STORE_KEY_AZUCAR = 'azucar-copells-v1';
+function loadAzucar(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY_AZUCAR);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {"history":{}};
+}
+function saveAzucar(){
+  localStorage.setItem(STORE_KEY_AZUCAR, JSON.stringify(azucarState));
+  backupToServer('azucar-copells', azucarState);
+}
+let azucarState = loadAzucar();
+{
+  const dedup = dedupeHistoryById(azucarState.history);
+  if(dedup.removed > 0){ azucarState.history = dedup.list; saveAzucar(); }
+}
+
+function getAzucarDepositoSummary(){
+  const byDep = {};
+  azucarState.history.forEach(h=>{
+    if(!byDep[h.deposito]) byDep[h.deposito] = {count:0, total:0};
+    byDep[h.deposito].count += 1;
+    byDep[h.deposito].total += h.paid;
+  });
+  return Object.keys(byDep).map(d => ({
+    deposito: d,
+    count: byDep[d].count,
+    total: byDep[d].total,
+    avg: byDep[d].count > 0 ? byDep[d].total / byDep[d].count : 0
+  })).sort((a,b) => b.total - a.total);
+}
+
+let azucarHistoryPage = 1;
+const AZUCAR_PAGE_SIZE = 20;
+
+function renderAzucarHistory(){
+  const body = document.getElementById('azucarHistoryBody');
+  if(!azucarState.history.length){
+    body.innerHTML = '<tr class="empty-row"><td colspan="5">Todav&iacute;a no hay env&iacute;os de az&uacute;car cargados.</td></tr>';
+    document.getElementById('azucarHistoryPagination').innerHTML = '';
+    return;
+  }
+  const list = azucarState.history.slice().sort((a,b) => b.date.localeCompare(a.date));
+  azucarHistoryPage = renderPagination('azucarHistoryPagination', list.length, AZUCAR_PAGE_SIZE, azucarHistoryPage, (p)=>{
+    azucarHistoryPage = p;
+    renderAzucarHistory();
+  });
+  const start = (azucarHistoryPage - 1) * AZUCAR_PAGE_SIZE;
+  const pageItems = list.slice(start, start + AZUCAR_PAGE_SIZE);
+
+  body.innerHTML = pageItems.map(h => `
+    <tr>
+      <td>${h.date}</td>
+      <td>${h.deposito}</td>
+      <td>${h.ref ? h.ref : '<span class="muted">&mdash;</span>'}</td>
+      <td class="num">${fmt(h.paid)}</td>
+      <td><button class="del-btn" data-id="${h.id}" title="Eliminar">&times;</button></td>
+    </tr>
+  `).join('');
+  body.querySelectorAll('.del-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      azucarState.history = azucarState.history.filter(h => h.id !== btn.dataset.id);
+      saveAzucar();
+      renderAzucar();
+    });
+  });
+}
+
+function renderAzucarDepositoSummary(){
+  const rows = getAzucarDepositoSummary();
+  const body = document.getElementById('azucarDepositoBody');
+  if(!rows.length){
+    body.innerHTML = '<tr class="empty-row"><td colspan="4">Todav&iacute;a no hay env&iacute;os cargados.</td></tr>';
+  } else {
+    body.innerHTML = rows.map(r => `
+      <tr>
+        <td>${r.deposito}</td>
+        <td class="num">${r.count}</td>
+        <td class="num">${fmt(r.total)}</td>
+        <td class="num">${fmt(r.avg)}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+function getAzucarMonthlyAggregates(){
+  const byMonth = {};
+  azucarState.history.forEach(h=>{
+    if(h.paid === null || h.paid === undefined || isNaN(h.paid)) return;
+    const ym = h.date.slice(0,7);
+    if(!byMonth[ym]) byMonth[ym] = 0;
+    byMonth[ym] += h.paid;
+  });
+  return Object.keys(byMonth).sort().map(ym => ({ label: monthLabel(ym), value: byMonth[ym] }));
+}
+
+function renderAzucarChart(){
+  renderBarChart('azucarChart', getAzucarMonthlyAggregates(), fmt, 'Gasto en az&uacute;car por mes');
+}
+
+function renderAzucar(){
+  renderAzucarHistory();
+  renderAzucarDepositoSummary();
+  renderAzucarChart();
+}
+
+document.getElementById('azucarExportBtn').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(azucarState, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'azucar-copells-datos.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+function mergeAzucarHistory(importedHistory){
+  const existingIds = new Set(azucarState.history.map(h => h.id));
+  let added = 0;
+  importedHistory.forEach(h => {
+    if(!h.id || !existingIds.has(h.id)){
+      azucarState.history.push(h);
+      if(h.id) existingIds.add(h.id);
+      added++;
+    }
+  });
+  if(added > 0){
+    saveAzucar();
+    renderAzucar();
+  }
+  return added;
+}
+
+document.getElementById('azucarImportInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const imported = JSON.parse(reader.result);
+      if(imported && Array.isArray(imported.history)){
+        const added = mergeAzucarHistory(imported.history);
+        alert(`Se sumaron ${added} env&iacute;o(s) nuevo(s) al historial.`);
+      }
+    }catch(err){
+      alert('No pude leer ese archivo como historial valido.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// Migracion: los envios de azucar a Copells (destino Copells, monto entre $200.000 y
+// $400.000) antes quedaban mezclados en Entregas Directas. Los separamos una sola vez.
+{
+  const toMove = entregasState.history.filter(h => /hacia Copells$/i.test((h.ref||'').trim()) && h.paid >= 200000 && h.paid <= 400000);
+  if(toMove.length){
+    const existingAzucarIds = new Set(azucarState.history.map(h => h.id));
+    toMove.forEach(h => {
+      if(!existingAzucarIds.has(h.id)){
+        azucarState.history.push(h);
+        existingAzucarIds.add(h.id);
+      }
+    });
+    const movedIds = new Set(toMove.map(h => h.id));
+    entregasState.history = entregasState.history.filter(h => !movedIds.has(h.id));
+    saveAzucar();
+    saveEntregas();
+    renderEntregas();
+    renderSummary();
+  }
+}
+
+renderAzucar();
+
 // ---- Auto-sync con el servidor local (solo funciona si la app se abre por http://, no abriendo el archivo directo) ----
 // ---- Sin Clasificar ----
 const STORE_KEY_SINCLASIFICAR = 'sin-clasificar-v1';
@@ -2324,6 +2579,14 @@ async function syncFromServer(showAlert){
       ok = true;
     }
   }catch(e){}
+  try{
+    const res4 = await fetch('sync-azucar-copells.json', {cache:'no-store'});
+    if(res4.ok){
+      const data4 = await res4.json();
+      if(Array.isArray(data4.history)) totalAdded += mergeAzucarHistory(data4.history);
+      ok = true;
+    }
+  }catch(e){}
   // Restaurar desde el respaldo del servidor si localStorage perdiÃ³ algo (no hace nada si ya estÃ¡ todo)
   try{
     const b1 = await fetch('backup-reparto-mayorista.json', {cache:'no-store'});
@@ -2344,6 +2607,13 @@ async function syncFromServer(showAlert){
     if(b3.ok){
       const bd3 = await b3.json();
       if(Array.isArray(bd3.history)) totalAdded += mergeSinClasificarHistory(bd3.history);
+    }
+  }catch(e){}
+  try{
+    const b4 = await fetch('backup-azucar-copells.json', {cache:'no-store'});
+    if(b4.ok){
+      const bd4 = await b4.json();
+      if(Array.isArray(bd4.history)) totalAdded += mergeAzucarHistory(bd4.history);
     }
   }catch(e){}
   if(lineEl){
