@@ -2292,6 +2292,12 @@ async function syncFromServer(showAlert){
     if(lineEl) lineEl.textContent = 'Esta es la versiÃ³n vieja (archivo directo). AbrÃ­ la app con iniciar-todo.ps1 para que sincronice sola.';
     return;
   }
+  const isPublicCopy = location.hostname !== 'localhost' && location.hostname !== '127.0.0.1';
+  if(isPublicCopy){
+    if(lineEl) lineEl.textContent = 'Esta es la copia pÃºblica: se actualiza sola cada 30 min, no hace falta sincronizar a mano.';
+    if(showAlert) alert('Esta es la copia pÃºblica. Se actualiza sola cada 30 minutos desde la PC de Lucas, asÃ­ que no hay nada para sincronizar acÃ¡. Si algo no aparece, esperÃ¡ un rato o avisale a Lucas.');
+    return;
+  }
   let totalAdded = 0;
   let ok = false;
   try{
