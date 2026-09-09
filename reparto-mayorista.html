@@ -418,6 +418,22 @@ tr:last-child td{border-bottom:none;}
 
 .chart-card-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:8px;}
 @media (max-width:800px){.chart-card-grid{grid-template-columns:1fr;}}
+
+.hero-total{font-family:"JetBrains Mono",monospace; font-size:34px; font-weight:700; color:var(--accent-strong); font-variant-numeric:tabular-nums;}
+.hero-label{font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); font-weight:600;}
+.hero-delta{font-family:"JetBrains Mono",monospace; font-size:14px; color:var(--ink-soft); margin-top:4px;}
+.kpi-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+@media (max-width:760px){.kpi-grid{grid-template-columns:1fr;}}
+.kpi-card{background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:14px 16px;}
+.kpi-card h3{margin:0 0 8px; font-size:13.5px; font-weight:700; display:flex; align-items:center;}
+.kpi-card h3 .swatch{display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:7px;}
+.kpi-total{font-family:"JetBrains Mono",monospace; font-size:22px; font-weight:700; margin-bottom:6px; font-variant-numeric:tabular-nums;}
+.kpi-meta{font-size:12px; color:var(--ink-soft); font-family:"JetBrains Mono",monospace; line-height:1.7;}
+.kpi-meta b{color:var(--ink);}
+.mini-bar{background:var(--surface); border:1px solid var(--line); border-radius:5px; height:14px; overflow:hidden; min-width:80px;}
+.mini-bar-fill{height:100%;}
+.objetivo-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+.objetivo-big{font-family:"JetBrains Mono",monospace; font-size:26px; font-weight:700;}
 .chart-panel h3{
   font-family:"Big Shoulders Display", sans-serif; font-weight:700; font-size:14px;
   text-transform:uppercase; letter-spacing:.03em; margin:0 0 10px; color:var(--ink-soft);
@@ -484,6 +500,7 @@ footer .foot-note{font-size:11.5px; color:var(--ink-faint);}
         <button type="button" class="nav-item" data-target="apartado-entregas"><span class="dot"></span>&#128230; Entregas Directas</button>
         <button type="button" class="nav-item" data-target="apartado-azucar"><span class="dot"></span>&#128717;&#65039; Az&uacute;car Copells</button>
         <button type="button" class="nav-item" data-target="apartado-sinclasificar"><span class="dot"></span>&#128194; Sin Clasificar</button>
+        <button type="button" class="nav-item" data-target="apartado-comparativas"><span class="dot"></span>&#128200; Comparativas Mensuales</button>
       </div>
     </div>
     <div class="nav-more">M&aacute;s apartados se van a ir sumando ac&aacute; a medida que los definamos.</div>
@@ -988,6 +1005,59 @@ footer .foot-note{font-size:11.5px; color:var(--ink-faint);}
   </div>
   </div>
   </div>
+
+  <div class="apartado-content" id="apartado-comparativas" style="display:none;">
+  <div class="wrap">
+  <div class="masthead">
+    <div>
+      <h1>Comparativas Mensuales</h1>
+      <div class="sub">Resumen para presentar &mdash; el mes elegido contra el mes anterior</div>
+    </div>
+    <div class="masthead-right">
+      <div class="seg-control theme-toggle-inline">
+        <button type="button" class="seg-btn" data-theme-choice="light" title="Tema claro">&#9728;&#65039;</button>
+        <button type="button" class="seg-btn" data-theme-choice="dark" title="Tema oscuro">&#9789;&#65039;</button>
+      </div>
+      <div class="plate plate-date">--</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card full">
+      <h2>Mes a comparar</h2>
+      <input type="month" id="comparativaMonthInput" class="filter-input" style="max-width:220px;">
+    </div>
+
+    <div class="card full" id="comparativaHeroCard"></div>
+
+    <div class="card full">
+      <div class="kpi-grid" id="comparativaKpis"></div>
+    </div>
+
+    <div class="card full">
+      <h2>Objetivo de viajes &mdash; Reparto Mayorista</h2>
+      <div id="comparativaObjetivo"></div>
+    </div>
+
+    <div class="card full">
+      <h2>Entregas Directas por dep&oacute;sito</h2>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Dep&oacute;sito</th>
+              <th class="num">Viajes</th>
+              <th class="num">Total</th>
+              <th style="width:160px;">% del total</th>
+            </tr>
+          </thead>
+          <tbody id="comparativaDepositoBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
   </main>
 </div>
 
@@ -1020,6 +1090,7 @@ document.querySelectorAll('#navList .nav-item[data-target]').forEach(btn=>{
     if(btn.dataset.target === 'apartado-entregas'){ renderEntregas(); }
     if(btn.dataset.target === 'apartado-azucar'){ renderAzucar(); }
     if(btn.dataset.target === 'apartado-sinclasificar'){ renderSinClasificar(); }
+    if(btn.dataset.target === 'apartado-comparativas'){ renderComparativas(); }
   });
 });
 
@@ -2591,6 +2662,115 @@ document.getElementById('sinClasificarToggleResolved').addEventListener('click',
   sinClasificarShowResolved = !sinClasificarShowResolved;
   renderSinClasificar();
 });
+
+// ---- Comparativas Mensuales ----
+function prevYearMonth(ym){
+  const parts = ym.split('-').map(Number);
+  const d = new Date(parts[0], parts[1]-2, 1);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function sumByMonth(history, ym){
+  const items = history.filter(h => h.date && h.date.slice(0,7) === ym && h.paid !== null && h.paid !== undefined && !isNaN(h.paid));
+  return { count: items.length, total: items.reduce((s,h) => s + h.paid, 0) };
+}
+
+function pctChangeStr(curr, prev){
+  if(prev === 0) return curr === 0 ? '0%' : 'nuevo';
+  const pct = (curr - prev) / prev * 100;
+  return `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+}
+
+function renderComparativas(){
+  const monthInput = document.getElementById('comparativaMonthInput');
+  const ym = monthInput.value || todayISO().slice(0,7);
+  const prevYm = prevYearMonth(ym);
+
+  const mayCurr = sumByMonth(state.history, ym);
+  const mayPrev = sumByMonth(state.history, prevYm);
+  const entCurr = sumByMonth(entregasState.history, ym);
+  const entPrev = sumByMonth(entregasState.history, prevYm);
+  const azuCurr = sumByMonth(azucarState.history, ym);
+  const azuPrev = sumByMonth(azucarState.history, prevYm);
+
+  const totalCurr = mayCurr.total + entCurr.total + azuCurr.total;
+  const totalPrev = mayPrev.total + entPrev.total + azuPrev.total;
+
+  document.getElementById('comparativaHeroCard').innerHTML = `
+    <div class="hero-label">Gasto total en transporte &mdash; ${monthLabel(ym)}</div>
+    <div class="hero-total">${fmt(totalCurr)}</div>
+    <div class="hero-delta">${pctChangeStr(totalCurr, totalPrev)} vs ${monthLabel(prevYm)} (${fmt(totalPrev)})</div>
+  `;
+
+  const kpis = [
+    { label:'Reparto Mayorista', colorVar:'--series-tomas', curr:mayCurr, prev:mayPrev, unit:'Viajes' },
+    { label:'Entregas Directas', colorVar:'--series-dep-4', curr:entCurr, prev:entPrev, unit:'Viajes' },
+    { label:'Az&uacute;car Copells', colorVar:'--series-dep-5', curr:azuCurr, prev:azuPrev, unit:'Env&iacute;os' }
+  ];
+  document.getElementById('comparativaKpis').innerHTML = kpis.map(k => `
+    <div class="kpi-card">
+      <h3><span class="swatch" style="background:var(${k.colorVar});"></span>${k.label}</h3>
+      <div class="kpi-total">${fmt(k.curr.total)}</div>
+      <div class="kpi-meta">$: <b>${pctChangeStr(k.curr.total, k.prev.total)}</b> vs ${monthLabel(prevYm)} (${fmt(k.prev.total)})</div>
+      <div class="kpi-meta">${k.unit}: <b>${pctChangeStr(k.curr.count, k.prev.count)}</b> vs ${monthLabel(prevYm)} (${k.curr.count} vs ${k.prev.count})</div>
+    </div>
+  `).join('');
+
+  const counts = getMayoristaMonthlyTripCounts();
+  const target = countTargetDaysInMonth(ym);
+  const real = counts[ym] || 0;
+  const pct = target > 0 ? (real / target * 100) : (real > 0 ? 100 : 0);
+  const isCurrentMonth = ym === todayISO().slice(0,7);
+  let badgeCls, badgeText;
+  if(isCurrentMonth){
+    badgeCls = 'neutral';
+    badgeText = String.fromCodePoint(0x23F3) + ' En curso';
+  } else {
+    badgeCls = pct >= 100 ? 'good' : 'bad';
+    badgeText = pct >= 100 ? (String.fromCodePoint(0x2705) + ' Cumplido') : (String.fromCodePoint(0x274C) + ' No cumplido');
+  }
+  document.getElementById('comparativaObjetivo').innerHTML = `
+    <div class="objetivo-row">
+      <div class="objetivo-big">${real} / ${target}</div>
+      <span class="badge ${badgeCls}">${badgeText} (${pct.toFixed(0)}%)</span>
+    </div>
+  `;
+
+  const depBody = document.getElementById('comparativaDepositoBody');
+  const byDep = {};
+  entregasState.history.filter(h => h.date && h.date.slice(0,7) === ym).forEach(h=>{
+    if(!byDep[h.deposito]) byDep[h.deposito] = {count:0, total:0};
+    byDep[h.deposito].count += 1;
+    byDep[h.deposito].total += (h.paid || 0);
+  });
+  const rows = Object.keys(byDep).map(d => ({ deposito:d, ...byDep[d] })).sort((a,b) => b.total - a.total);
+  if(!rows.length){
+    depBody.innerHTML = '<tr class="empty-row"><td colspan="4">No hay entregas directas cargadas en este mes.</td></tr>';
+  } else {
+    const maxTotal = Math.max(...rows.map(r => r.total), 1);
+    const grandTotal = rows.reduce((s,r) => s + r.total, 0);
+    const colorFor = d => {
+      const idx = DEPOSITOS_ORDEN.indexOf(d);
+      return idx >= 0 ? `var(--series-dep-${idx+1})` : 'var(--series-other)';
+    };
+    depBody.innerHTML = rows.map(r => `
+      <tr>
+        <td>${r.deposito}</td>
+        <td class="num">${r.count}</td>
+        <td class="num">${fmt(r.total)}</td>
+        <td>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="mini-bar" style="flex:1;"><div class="mini-bar-fill" style="width:${(r.total/maxTotal*100).toFixed(0)}%; background:${colorFor(r.deposito)};"></div></div>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ink-faint); min-width:32px; text-align:right;">${grandTotal > 0 ? (r.total/grandTotal*100).toFixed(0) : 0}%</span>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+}
+
+document.getElementById('comparativaMonthInput').value = todayISO().slice(0,7);
+document.getElementById('comparativaMonthInput').addEventListener('change', renderComparativas);
 
 async function syncFromServer(showAlert){
   const lineEl = document.getElementById('syncLine');
