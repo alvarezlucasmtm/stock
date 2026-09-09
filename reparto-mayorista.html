@@ -2961,7 +2961,7 @@ async function syncFromServer(showAlert){
   if(lineEl){
     if(ok){
       const now = new Date().toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
-      lineEl.textContent = `Ãšltima sincronizaciÃ³n: ${now}`;
+      lineEl.textContent = `${String.fromCodePoint(0x1F550)} Ãšltima sincronizaciÃ³n: ${now}`;
     } else {
       lineEl.textContent = 'No se pudo conectar al servidor local.';
     }
