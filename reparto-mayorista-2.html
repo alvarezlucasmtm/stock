@@ -1225,6 +1225,7 @@ function saveState(){
 }
 
 let state = loadState();
+if(!Array.isArray(state.deletedIds)) state.deletedIds = [];
 {
   const dedup = dedupeHistoryById(state.history);
   if(dedup.removed > 0){ state.history = dedup.list; saveState(); }
@@ -1504,6 +1505,7 @@ function renderHistory(){
   body.querySelectorAll('.del-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       state.history = state.history.filter(h => h.id !== btn.dataset.id);
+      if(!state.deletedIds.includes(btn.dataset.id)) state.deletedIds.push(btn.dataset.id);
       saveState();
       renderHistory();
       renderCalibration();
@@ -2014,6 +2016,7 @@ function mergeRepartoHistory(importedHistory){
   const existingIds = new Set(state.history.map(h => h.id));
   let added = 0;
   importedHistory.forEach(h => {
+    if(h.id && state.deletedIds.includes(h.id)) return;
     if(!h.id || !existingIds.has(h.id)){
       state.history.push(h);
       if(h.id) existingIds.add(h.id);
@@ -2381,6 +2384,7 @@ function saveEntregas(){
   backupToServer('entregas-directas', entregasState);
 }
 entregasState = loadEntregas();
+if(!Array.isArray(entregasState.deletedIds)) entregasState.deletedIds = [];
 {
   const dedup = dedupeHistoryById(entregasState.history);
   if(dedup.removed > 0){ entregasState.history = dedup.list; saveEntregas(); }
@@ -2462,6 +2466,7 @@ function renderEntregaHistory(){
   body.querySelectorAll('.del-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       entregasState.history = entregasState.history.filter(h => h.id !== btn.dataset.id);
+      if(!entregasState.deletedIds.includes(btn.dataset.id)) entregasState.deletedIds.push(btn.dataset.id);
       saveEntregas();
       renderEntregas();
     });
@@ -2589,6 +2594,7 @@ function mergeEntregasHistory(importedHistory){
   const existingIds = new Set(entregasState.history.map(h => h.id));
   let added = 0;
   importedHistory.forEach(h => {
+    if(h.id && entregasState.deletedIds.includes(h.id)) return;
     if(!h.id || !existingIds.has(h.id)){
       entregasState.history.push(h);
       if(h.id) existingIds.add(h.id);
@@ -2637,6 +2643,7 @@ function saveAzucar(){
   backupToServer('azucar-copells', azucarState);
 }
 azucarState = loadAzucar();
+if(!Array.isArray(azucarState.deletedIds)) azucarState.deletedIds = [];
 {
   const dedup = dedupeHistoryById(azucarState.history);
   if(dedup.removed > 0){ azucarState.history = dedup.list; saveAzucar(); }
@@ -2687,6 +2694,7 @@ function renderAzucarHistory(){
   body.querySelectorAll('.del-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       azucarState.history = azucarState.history.filter(h => h.id !== btn.dataset.id);
+      if(!azucarState.deletedIds.includes(btn.dataset.id)) azucarState.deletedIds.push(btn.dataset.id);
       saveAzucar();
       renderAzucar();
     });
@@ -2747,6 +2755,7 @@ function mergeAzucarHistory(importedHistory){
   const existingIds = new Set(azucarState.history.map(h => h.id));
   let added = 0;
   importedHistory.forEach(h => {
+    if(h.id && azucarState.deletedIds.includes(h.id)) return;
     if(!h.id || !existingIds.has(h.id)){
       azucarState.history.push(h);
       if(h.id) existingIds.add(h.id);
