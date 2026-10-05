@@ -721,15 +721,6 @@ footer .foot-note{font-size:11.5px; color:var(--ink-faint);}
     </div>
 
     <div class="card full">
-      <h2>Ganancia Mayorista por mes</h2>
-      <p class="hint">Ganancia neta total y % de ganancia sobre lo facturado, por mes (independiente del filtro de arriba).</p>
-      <h3 style="margin:12px 0 6px;font-size:14px;color:var(--muted);">Ganancia neta ($)</h3>
-      <div id="gananciaMensualChart"></div>
-      <h3 style="margin:18px 0 6px;font-size:14px;color:var(--muted);">% ganancia vs facturado</h3>
-      <div id="gananciaMensualPctChart"></div>
-    </div>
-
-    <div class="card full">
       <h2>Ganancia Mayorista por d&iacute;a</h2>
       <p class="hint">Ventas Mayorista del d&iacute;a, menos el costo valorizado de los productos, menos el costo de env&iacute;o al dep&oacute;sito (y producci&oacute;n, para az&uacute;car) de los productos vendidos, menos el flete de ese d&iacute;a. Se calcula solo con lo que ya tiene el detalle de la venta procesado.</p>
       <div class="tablewrap">
@@ -1122,7 +1113,19 @@ footer .foot-note{font-size:11.5px; color:var(--ink-faint);}
 
     <div class="card full" id="comparativaHeroCard"></div>
 
+    <div class="card full" id="comparativaGananciaCard"></div>
+
     <div class="card full">
+      <h2>Ganancia Mayorista por mes</h2>
+      <p class="hint">Ganancia neta total y % de ganancia sobre lo facturado, por mes (hist&oacute;rico completo).</p>
+      <h3 style="margin:12px 0 6px;font-size:14px;color:var(--muted);">Ganancia neta ($)</h3>
+      <div id="gananciaMensualChart"></div>
+      <h3 style="margin:18px 0 6px;font-size:14px;color:var(--muted);">% ganancia vs facturado</h3>
+      <div id="gananciaMensualPctChart"></div>
+    </div>
+
+    <div class="card full">
+      <h2>Gastos de transporte por rubro</h2>
       <div class="kpi-grid" id="comparativaKpis"></div>
     </div>
 
@@ -3151,6 +3154,28 @@ function renderComparativas(){
     <div class="hero-delta">${pctChangeStr(totalCurr, totalPrev)} vs ${monthLabel(prevYm)} (${fmt(totalPrev)})</div>
     ${ventasLine}
   `;
+
+  function sumGananciaMonth(ymTarget){
+    const porDia = gananciaMayoristaState.porDia || {};
+    const out = { facturado:0, gananciaNeta:0 };
+    Object.keys(porDia).filter(d => d.slice(0,7) === ymTarget).forEach(d=>{
+      out.facturado += porDia[d].totalFacturado;
+      out.gananciaNeta += porDia[d].gananciaNeta;
+    });
+    return out;
+  }
+  const ganCurr = sumGananciaMonth(ym);
+  const ganPrev = sumGananciaMonth(prevYm);
+  const margenCurr = ganCurr.facturado > 0 ? (ganCurr.gananciaNeta / ganCurr.facturado * 100) : 0;
+  const margenPrev = ganPrev.facturado > 0 ? (ganPrev.gananciaNeta / ganPrev.facturado * 100) : 0;
+  const gananciaCls = ganCurr.gananciaNeta >= 0 ? 'good' : 'bad';
+  document.getElementById('comparativaGananciaCard').innerHTML = `
+    <div class="hero-label">Ganancia neta Mayorista &mdash; ${monthLabel(ym)}</div>
+    <div class="hero-total"><span class="badge ${gananciaCls}" style="font-size:22px;padding:4px 12px;">${fmt(ganCurr.gananciaNeta)}</span></div>
+    <div class="hero-delta">${pctChangeStr(ganCurr.gananciaNeta, ganPrev.gananciaNeta)} vs ${monthLabel(prevYm)} (${fmt(ganPrev.gananciaNeta)})</div>
+    <div class="hero-delta" style="margin-top:6px;">Margen: <b>${margenCurr.toFixed(1)}%</b> de lo facturado (${fmt(ganCurr.facturado)}) &middot; mes anterior: ${margenPrev.toFixed(1)}%</div>
+  `;
+  renderGananciaMensualChart();
 
   const kpis = [
     { label:'Reparto Mayorista', colorVar:'--series-tomas', curr:mayCurr, prev:mayPrev, unit:'Viajes' },
