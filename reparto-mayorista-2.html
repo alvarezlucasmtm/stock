@@ -207,6 +207,17 @@ body{
 }
 
 .main{flex:1; min-width:0;}
+
+body.presentation-mode .sidebar{display:none;}
+body.presentation-mode .wrap{max-width:1300px;}
+body.presentation-mode .hero-total{font-size:52px;}
+body.presentation-mode .hero-label{font-size:15px;}
+body.presentation-mode .hero-delta{font-size:18px;}
+body.presentation-mode .kpi-total{font-size:30px;}
+body.presentation-mode .kpi-card h3{font-size:16px;}
+body.presentation-mode .card h2{font-size:24px;}
+body.presentation-mode .objetivo-big{font-size:36px;}
+
 .wrap{
   max-width:1080px;
   margin:0 auto;
@@ -218,10 +229,10 @@ body{
     width:100%; border-right:none; border-bottom:1px solid var(--line);
     flex-direction:row; align-items:center; justify-content:space-between; padding:14px 18px; gap:14px;
   }
-  .nav-group{display:flex; align-items:center; gap:10px;}
+  .nav-group{display:flex; align-items:center; gap:10px; min-width:0; flex:1;}
   .nav-group .nav-label{display:none;}
-  .nav-list{flex-direction:row;}
-  .nav-item{width:auto;}
+  .nav-list{flex-direction:row; overflow-x:auto; -webkit-overflow-scrolling:touch; min-width:0;}
+  .nav-item{width:auto; flex-shrink:0;}
   .nav-more{display:none;}
   .theme-switch{margin-top:0; padding-top:0; border-top:none;}
   .theme-switch .nav-label{display:none;}
@@ -1099,6 +1110,7 @@ footer .foot-note{font-size:11.5px; color:var(--ink-faint);}
       <div class="sub">Resumen para presentar &mdash; el mes elegido contra el mes anterior</div>
     </div>
     <div class="masthead-right">
+      <button type="button" class="btn-ghost btn-small" id="presentationModeBtn" title="Oculta el men&uacute; y agranda los n&uacute;meros para compartir pantalla">&#128187; Modo presentaci&oacute;n</button>
       <div class="seg-control theme-toggle-inline">
         <button type="button" class="seg-btn" data-theme-choice="light" title="Tema claro">&#9728;&#65039;</button>
         <button type="button" class="seg-btn" data-theme-choice="dark" title="Tema oscuro">&#9789;&#65039;</button>
@@ -1120,9 +1132,9 @@ footer .foot-note{font-size:11.5px; color:var(--ink-faint);}
     <div class="card full">
       <h2>Ganancia Mayorista por mes</h2>
       <p class="hint">Ganancia neta total y % de ganancia sobre lo facturado, por mes (hist&oacute;rico completo).</p>
-      <h3 style="margin:12px 0 6px;font-size:14px;color:var(--muted);">Ganancia neta ($)</h3>
+      <h3 style="margin:12px 0 6px;font-size:14px;color:var(--ink-soft);">Ganancia neta ($)</h3>
       <div id="gananciaMensualChart"></div>
-      <h3 style="margin:18px 0 6px;font-size:14px;color:var(--muted);">% ganancia vs facturado</h3>
+      <h3 style="margin:18px 0 6px;font-size:14px;color:var(--ink-soft);">% ganancia vs facturado</h3>
       <div id="gananciaMensualPctChart"></div>
     </div>
 
@@ -1175,6 +1187,15 @@ applyThemeUI(document.documentElement.getAttribute('data-theme') || 'light');
 document.querySelectorAll('.theme-toggle-inline .seg-btn').forEach(b=>{
   b.addEventListener('click', ()=> setTheme(b.dataset.themeChoice));
 });
+
+// ---- Modo presentaci&oacute;n (oculta el menu y agranda numeros para compartir pantalla) ----
+const presentationBtn = document.getElementById('presentationModeBtn');
+if(presentationBtn){
+  presentationBtn.addEventListener('click', ()=>{
+    const on = document.body.classList.toggle('presentation-mode');
+    presentationBtn.textContent = (on ? String.fromCodePoint(0x274C) + ' Salir de modo presentaciÃ³n' : String.fromCodePoint(0x1F4BB) + ' Modo presentaciÃ³n');
+  });
+}
 
 // ---- Apartado navigation ----
 document.querySelectorAll('#navList .nav-item[data-target]').forEach(btn=>{
