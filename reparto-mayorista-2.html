@@ -3270,6 +3270,8 @@ function renderComparativas(){
 document.getElementById('comparativaMonthInput').value = todayISO().slice(0,7);
 document.getElementById('comparativaMonthInput').addEventListener('change', renderComparativas);
 
+const PUBLISHED_AT_ISO = '2026-10-06T09:25:34-03:00';
+
 async function syncFromServer(showAlert){
   const lineEl = document.getElementById('syncLine');
   if(location.protocol !== 'http:' && location.protocol !== 'https:'){
@@ -3278,8 +3280,19 @@ async function syncFromServer(showAlert){
   }
   const isPublicCopy = location.hostname !== 'localhost' && location.hostname !== '127.0.0.1';
   if(isPublicCopy){
-    if(lineEl) lineEl.textContent = 'Esta es la copia pÃºblica: se actualiza sola cada 30 min, no hace falta sincronizar a mano.';
-    if(showAlert) alert('Esta es la copia pÃºblica. Se actualiza sola cada 30 minutos desde la PC de Lucas, asÃ­ que no hay nada para sincronizar acÃ¡. Si algo no aparece, esperÃ¡ un rato o avisale a Lucas.');
+    let msg = 'Esta es la copia pÃºblica: se actualiza sola cada 30 min, no hace falta sincronizar a mano.';
+    if(PUBLISHED_AT_ISO){
+      const d = new Date(PUBLISHED_AT_ISO);
+      const diffMin = Math.round((Date.now() - d.getTime()) / 60000);
+      const stamp = d.toLocaleString('es-AR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
+      const antiguedad = diffMin < 2 ? 'reciÃ©n' : (diffMin < 60 ? `hace ${diffMin} min` : `hace ${Math.round(diffMin/60)} h`);
+      msg = `${String.fromCodePoint(0x1F550)} Datos actualizados: ${stamp} (${antiguedad})`;
+      if(diffMin > 90){
+        msg += ' â€” ' + String.fromCodePoint(0x26A0,0xFE0F) + ' puede estar desactualizado, la PC de Lucas no sincronizÃ³ en un rato.';
+      }
+    }
+    if(lineEl) lineEl.textContent = msg;
+    if(showAlert) alert(msg + '\n\nEsta es la copia pÃºblica, se actualiza sola desde la PC de Lucas. No hay nada para sincronizar acÃ¡.');
     return;
   }
   let totalAdded = 0;
