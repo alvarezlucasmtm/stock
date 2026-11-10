@@ -730,7 +730,10 @@ footer .foot-note{font-size:11.5px; color:var(--ink-faint);}
         <input type="date" id="gananciaFilterDay" class="filter-input" style="display:none;">
         <input type="month" id="gananciaFilterMonth" class="filter-input" style="display:none;">
         <select id="gananciaFilterYear" class="filter-input" style="display:none;"></select>
+        <button type="button" class="btn-ghost btn-small" id="exportGananciaBtn">&#128202; Exportar a Excel</button>
+        <button type="button" class="btn-ghost btn-small" id="exportGananciaPdfBtn">&#128196; Exportar a PDF</button>
       </div>
+      <p class="hint" style="margin:8px 0 0;">Exporta la ganancia y facturado del per&iacute;odo filtrado de arriba, con el detalle de producto por venta.</p>
     </div>
 
     <div class="card full">
@@ -2384,6 +2387,227 @@ function renderGananciaFiltrada(){
   renderGananciaVenta();
 }
 
+// ---- Exportar Ganancia Mayorista a Excel (sin librerias externas: genera un
+// XML "SpreadsheetML", el formato nativo de Excel 2003+, que abre directo sin
+// avisos de compatibilidad con extension .xls) ----
+function xmlEscapeExcel(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+}
+function excelCell(value){
+  if(value === null || value === undefined || value === ''){
+    return '<Cell><Data ss:Type="String"></Data></Cell>';
+  }
+  if(typeof value === 'number' && !isNaN(value)){
+    return `<Cell><Data ss:Type="Number">${value}</Data></Cell>`;
+  }
+  return `<Cell><Data ss:Type="String">${xmlEscapeExcel(value)}</Data></Cell>`;
+}
+function buildExcelXml(sheets){
+  const sheetsXml = sheets.map(sheet => {
+    const headerRow = `<Row ss:StyleID="header">${sheet.headers.map(h => excelCell(h)).join('')}</Row>`;
+    const dataRows = sheet.rows.map(r => `<Row>${r.map(c => excelCell(c)).join('')}</Row>`).join('');
+    return `<Worksheet ss:Name="${xmlEscapeExcel(sheet.name)}"><Table>${headerRow}${dataRows}</Table></Worksheet>`;
+  }).join('');
+  return `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <Styles>
+  <Style ss:ID="header"><Font ss:Bold="1"/><Interior ss:Color="#DCEFE1" ss:Pattern="Solid"/></Style>
+ </Styles>
+ ${sheetsXml}
+</Workbook>`;
+}
+function downloadExcelFile(xmlContent, filename){
+  const blob = new Blob([xmlContent], {type: 'application/vnd.ms-excel'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+function round2Excel(n){ return Math.round((n || 0) * 100) / 100; }
+
+function periodLabelForFilename(){
+  const f = gananciaPeriodFilter;
+  if(f.type === 'day' && f.value) return f.value;
+  if(f.type === 'month' && f.value) return f.value;
+  if(f.type === 'year' && f.value) return f.value;
+  return 'todo';
+}
+
+function exportGananciaExcel(){
+  const porDia = gananciaMayoristaState.porDia || {};
+  const dias = Object.keys(porDia).filter(fechaEnRangoGanancia).sort();
+  const ventas = (gananciaMayoristaState.porVenta || [])
+    .filter(v => fechaEnRangoGanancia(v.fecha))
+    .sort((a,b) => a.fecha.localeCompare(b.fecha) || (a.ventaId - b.ventaId));
+
+  if(!dias.length && !ventas.length){
+    alert('No hay ganancia calculada para el perÃ­odo filtrado.');
+    return;
+  }
+
+  const resumenHeaders = ['Fecha','Ventas','Facturado','Costo productos','EnvÃ­o + producciÃ³n','Flete','Ganancia neta'];
+  const resumenRows = dias.map(d => {
+    const r = porDia[d];
+    return [d, r.ventas, round2Excel(r.totalFacturado), round2Excel(r.costoProductos), round2Excel(r.costoEnvioProduccion || 0), round2Excel(r.flete), round2Excel(r.gananciaNeta)];
+  });
+  const totResumen = dias.reduce((acc, d) => {
+    const r = porDia[d];
+    acc.ventas += r.ventas; acc.facturado += r.totalFacturado; acc.costo += r.costoProductos;
+    acc.extra += (r.costoEnvioProduccion || 0); acc.flete += r.flete; acc.neta += r.gananciaNeta;
+    return acc;
+  }, {ventas:0, facturado:0, costo:0, extra:0, flete:0, neta:0});
+  if(dias.length){
+    resumenRows.push(['TOTAL', totResumen.ventas, round2Excel(totResumen.facturado), round2Excel(totResumen.costo), round2Excel(totResumen.extra), round2Excel(totResumen.flete), round2Excel(totResumen.neta)]);
+  }
+
+  const detalleHeaders = ['Fecha','Cliente','Producto','Cantidad','Facturado venta','Costo productos venta','EnvÃ­o + producciÃ³n venta','Margen bruto','Flete (prorrateado)','Ganancia neta','Margen %'];
+  const detalleRows = [];
+  ventas.forEach(v => {
+    const dia = porDia[v.fecha];
+    const fleteShare = (dia && dia.ventas > 0) ? (dia.flete / dia.ventas) : 0;
+    const gananciaNeta = v.margenBruto - fleteShare;
+    const margenPct = v.total > 0 ? (gananciaNeta / v.total * 100) : 0;
+    const productos = (v.productos && v.productos.length) ? v.productos : [{producto:'â€”', cantidad: null}];
+    productos.forEach((p, idx) => {
+      detalleRows.push([
+        v.fecha, v.cliente || '', p.producto, (p.cantidad === null || p.cantidad === undefined) ? null : Number(p.cantidad),
+        idx === 0 ? round2Excel(v.total) : null,
+        idx === 0 ? round2Excel(v.costoProductos) : null,
+        idx === 0 ? round2Excel(v.costoEnvioProduccion || 0) : null,
+        idx === 0 ? round2Excel(v.margenBruto) : null,
+        idx === 0 ? round2Excel(fleteShare) : null,
+        idx === 0 ? round2Excel(gananciaNeta) : null,
+        idx === 0 ? round2Excel(margenPct) : null
+      ]);
+    });
+  });
+
+  const xml = buildExcelXml([
+    {name: 'Resumen por dia', headers: resumenHeaders, rows: resumenRows},
+    {name: 'Detalle por venta', headers: detalleHeaders, rows: detalleRows}
+  ]);
+  downloadExcelFile(xml, `ganancia-mayorista-${periodLabelForFilename()}.xls`);
+}
+document.getElementById('exportGananciaBtn').addEventListener('click', exportGananciaExcel);
+
+// ---- Exportar Ganancia Mayorista a PDF: arma una ventana nueva con un reporte
+// imprimible y dispara el dialogo de impresion del navegador (el usuario elige
+// "Guardar como PDF" ahi) - sin librerias externas, funciona sin internet. ----
+function exportGananciaPDF(){
+  const porDia = gananciaMayoristaState.porDia || {};
+  const dias = Object.keys(porDia).filter(fechaEnRangoGanancia).sort();
+  const ventas = (gananciaMayoristaState.porVenta || [])
+    .filter(v => fechaEnRangoGanancia(v.fecha))
+    .sort((a,b) => a.fecha.localeCompare(b.fecha) || (a.ventaId - b.ventaId));
+
+  if(!dias.length && !ventas.length){
+    alert('No hay ganancia calculada para el perÃ­odo filtrado.');
+    return;
+  }
+
+  const totResumen = dias.reduce((acc, d) => {
+    const r = porDia[d];
+    acc.ventas += r.ventas; acc.facturado += r.totalFacturado; acc.costo += r.costoProductos;
+    acc.extra += (r.costoEnvioProduccion || 0); acc.flete += r.flete; acc.neta += r.gananciaNeta;
+    return acc;
+  }, {ventas:0, facturado:0, costo:0, extra:0, flete:0, neta:0});
+
+  const resumenRowsHtml = dias.map(d => {
+    const r = porDia[d];
+    return `<tr><td>${d}</td><td class="num">${r.ventas}</td><td class="num">${fmt(r.totalFacturado)}</td><td class="num">${fmt(r.costoProductos)}</td><td class="num">${fmt(r.costoEnvioProduccion || 0)}</td><td class="num">${fmt(r.flete)}</td><td class="num">${fmt(r.gananciaNeta)}</td></tr>`;
+  }).join('');
+
+  const detalleRowsHtml = ventas.map(v => {
+    const dia = porDia[v.fecha];
+    const fleteShare = (dia && dia.ventas > 0) ? (dia.flete / dia.ventas) : 0;
+    const gananciaNeta = v.margenBruto - fleteShare;
+    const margenPct = v.total > 0 ? (gananciaNeta / v.total * 100) : 0;
+    const productos = (v.productos && v.productos.length) ? v.productos : [{producto: 'â€”', cantidad: null}];
+    const rs = productos.length;
+    return productos.map((p, idx) => {
+      const cantTxt = (p.cantidad === null || p.cantidad === undefined) ? 'â€”' : Number(p.cantidad).toLocaleString('es-AR');
+      const ventaCols = idx === 0
+        ? `<td rowspan="${rs}">${v.fecha}</td><td rowspan="${rs}">${xmlEscapeExcel(v.cliente || 'â€”')}</td>`
+        : '';
+      const totalCols = idx === 0
+        ? `<td rowspan="${rs}" class="num">${fmt(v.total)}</td><td rowspan="${rs}" class="num">${fmt(v.costoProductos)}</td><td rowspan="${rs}" class="num">${fmt(v.costoEnvioProduccion || 0)}</td><td rowspan="${rs}" class="num">${fmt(v.margenBruto)}</td><td rowspan="${rs}" class="num">${fmt(fleteShare)}</td><td rowspan="${rs}" class="num">${fmt(gananciaNeta)}</td><td rowspan="${rs}" class="num">${margenPct.toFixed(1)}%</td>`
+        : '';
+      return `<tr>${ventaCols}<td>${xmlEscapeExcel(p.producto)}</td><td class="num">${cantTxt}</td>${totalCols}</tr>`;
+    }).join('');
+  }).join('');
+
+  const periodoTxt = periodLabelForFilename() === 'todo' ? 'Todo el histÃ³rico' : periodLabelForFilename();
+  const generadoEl = new Date().toLocaleString('es-AR');
+
+  const html = `<!doctype html>
+<html><head><meta charset="utf-8"><title>Ganancia Mayorista - ${periodoTxt}</title>
+<style>
+  @page { size: A4 landscape; margin: 14mm; }
+  body{ font-family: Arial, sans-serif; color:#1a1a1a; margin:0; padding:0 16px; }
+  h1{ font-size:20px; margin:16px 0 2px; }
+  .sub{ font-size:12px; color:#555; margin:0 0 18px; }
+  h2{ font-size:15px; margin:22px 0 8px; border-bottom:2px solid #1f4f42; padding-bottom:4px; }
+  table{ width:100%; border-collapse:collapse; margin-bottom:10px; }
+  th, td{ border:1px solid #ccc; padding:4px 7px; font-size:11px; text-align:left; }
+  th{ background:#dcefe1; text-transform:uppercase; font-size:9.5px; letter-spacing:.02em; }
+  td.num, th.num{ text-align:right; font-variant-numeric:tabular-nums; }
+  tr.total td{ font-weight:700; background:#f5f7f3; }
+  tbody tr:nth-child(even){ background:#fafafa; }
+</style>
+</head><body>
+  <h1>Ganancia Mayorista &mdash; La Campechana</h1>
+  <div class="sub">PerÃ­odo: ${periodoTxt} &middot; Generado: ${generadoEl}</div>
+
+  <h2>Resumen por dÃ­a</h2>
+  <table>
+    <thead><tr><th>Fecha</th><th class="num">Ventas</th><th class="num">Facturado</th><th class="num">Costo productos</th><th class="num">EnvÃ­o+ProducciÃ³n</th><th class="num">Flete</th><th class="num">Ganancia neta</th></tr></thead>
+    <tbody>${resumenRowsHtml}
+      <tr class="total"><td>TOTAL</td><td class="num">${totResumen.ventas}</td><td class="num">${fmt(totResumen.facturado)}</td><td class="num">${fmt(totResumen.costo)}</td><td class="num">${fmt(totResumen.extra)}</td><td class="num">${fmt(totResumen.flete)}</td><td class="num">${fmt(totResumen.neta)}</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Detalle por venta y producto</h2>
+  <table>
+    <thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th class="num">Cantidad</th><th class="num">Facturado</th><th class="num">Costo productos</th><th class="num">EnvÃ­o+ProducciÃ³n</th><th class="num">Margen bruto</th><th class="num">Flete</th><th class="num">Ganancia neta</th><th class="num">Margen %</th></tr></thead>
+    <tbody>${detalleRowsHtml}</tbody>
+  </table>
+</body></html>`;
+
+  // Se usa un iframe oculto en vez de window.open() para no depender de que el
+  // navegador permita ventanas emergentes (eso era lo que fallaba).
+  let frame = document.getElementById('pdfExportFrame');
+  if(!frame){
+    frame = document.createElement('iframe');
+    frame.id = 'pdfExportFrame';
+    frame.style.position = 'fixed';
+    frame.style.right = '0';
+    frame.style.bottom = '0';
+    frame.style.width = '0';
+    frame.style.height = '0';
+    frame.style.border = '0';
+    document.body.appendChild(frame);
+  }
+  const doc = frame.contentWindow.document;
+  doc.open();
+  doc.write(html);
+  doc.close();
+  setTimeout(() => {
+    try{
+      frame.contentWindow.focus();
+      frame.contentWindow.print();
+    }catch(e){
+      alert('No se pudo abrir el diÃ¡logo de impresiÃ³n. ProbÃ¡ de nuevo.');
+    }
+  }, 150);
+}
+document.getElementById('exportGananciaPdfBtn').addEventListener('click', exportGananciaPDF);
+
 document.querySelectorAll('#gananciaPeriodToggle .seg-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('#gananciaPeriodToggle .seg-btn').forEach(b => b.classList.toggle('active', b === btn));
@@ -3270,7 +3494,7 @@ function renderComparativas(){
 document.getElementById('comparativaMonthInput').value = todayISO().slice(0,7);
 document.getElementById('comparativaMonthInput').addEventListener('change', renderComparativas);
 
-const PUBLISHED_AT_ISO = '2026-11-10T14:48:09-03:00';
+const PUBLISHED_AT_ISO = '2026-11-10T15:18:39-03:00';
 
 async function syncFromServer(showAlert){
   const lineEl = document.getElementById('syncLine');
