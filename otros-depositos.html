@@ -27,6 +27,8 @@ body{background:#f0f2f5;min-height:100vh;}
 [data-theme="dark"] input{background:#20232b !important;color:#e8e8e8 !important;border-color:#333844 !important;}
 [data-theme="dark"] .ftipo{background:#1e2128 !important;border-color:#333844 !important;color:#b0b6bf !important;}
 [data-theme="dark"] .ftipo.active{background:#1D9E75 !important;border-color:#1D9E75 !important;color:#fff !important;}
+[data-theme="dark"] .ftipopd{background:#1e2128 !important;border-color:#333844 !important;color:#b0b6bf !important;}
+[data-theme="dark"] .ftipopd.active{background:#1D9E75 !important;border-color:#1D9E75 !important;color:#fff !important;}
 [data-theme="dark"] a{color:#6fa8ff !important;}
 .wrap{max-width:1200px;margin:0 auto;padding:24px 16px;}
 .hdr{background:#fff;border-radius:14px;padding:18px 22px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.07);}
@@ -72,7 +74,7 @@ tbody tr:hover{background:#f9f9f9;}
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
       <button id="theme-toggle" onclick="toggleTheme()" style="font-size:12px;color:#888;background:#f5f5f5;padding:6px 13px;border-radius:20px;white-space:nowrap;border:none;cursor:pointer;font-weight:600;">&#127769; Modo oscuro</button>
-      <div class="ts">&#9201; 16/11/2026 12:42</div>
+      <div class="ts">&#9201; 16/11/2026 12:45</div>
     </div>
   </div>
   <div class="banner"><div class="dot"></div>Auto-actualizaci&oacute;n cada 5 minutos. Pr&oacute;xima recarga autom&aacute;tica en breve.</div>
@@ -103,6 +105,13 @@ tbody tr:hover{background:#f9f9f9;}
     <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
       <input id="ped-search" type="text" placeholder="&#128269; Buscar por # pedido o cliente..." oninput="filterPedidos()"
         style="flex:1;min-width:200px;padding:9px 14px;border-radius:8px;border:2px solid #e0e0e0;font-size:13px;background:#fff;color:#222;outline:none;">
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+      <span style="font-size:12px;font-weight:700;color:#888;margin-right:4px;">&#128203; Tipo:</span>
+      <button onclick="setPedTipo('',this)" class="ftipopd active" style="padding:6px 12px;border-radius:8px;border:2px solid #1D9E75;background:#1D9E75;color:#fff;font-size:11px;font-weight:700;cursor:pointer;">Todos</button>
+      <button onclick="setPedTipo('entrega directa',this)" class="ftipopd" data-tp="entrega directa" style="padding:6px 12px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:11px;font-weight:700;cursor:pointer;">Entrega directa <span class="tp-cnt" style="font-weight:400;opacity:.75;"></span></button>
+        <button onclick="setPedTipo('retiro en depósito',this)" class="ftipopd" data-tp="retiro en depósito" style="padding:6px 12px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;color:#666;font-size:11px;font-weight:700;cursor:pointer;">Retiro en Depósito <span class="tp-cnt" style="font-weight:400;opacity:.75;"></span></button>
+        
     </div>
     <div class="card">
       <div class="card-hdr">Pedidos Activos Otros Depositos &mdash; <span id="cnt-pedidos">7</span> pedidos &nbsp;<small style="font-weight:400;color:#aaa;">(clic en fila para ver productos)</small></div>
@@ -467,6 +476,14 @@ function showTab(id,btn){
 function toggle(i){var d=document.getElementById('p-det-'+i);if(d)d.style.display=d.style.display==='none'?'table-row-group':'none';}
 function toggleStock(i){var d=document.getElementById('stock-det-'+i);if(d)d.style.display=d.style.display==='none'?'table-row-group':'none';}
 var _pedDeposito='';
+var _pedTipo='';
+function setPedTipo(t,btn){
+  _pedTipo=t;
+  document.querySelectorAll('.ftipopd').forEach(function(b){b.classList.remove('active');b.style.background='#fff';b.style.color='#666';b.style.borderColor='#e0e0e0';});
+  btn.classList.add('active');
+  btn.style.background='#1D9E75';btn.style.color='#fff';btn.style.borderColor='#1D9E75';
+  filterPedidos();
+}
 function setPedDeposito(d,btn){
   _pedDeposito=d;
   document.querySelectorAll('.ftipo').forEach(function(b){b.classList.remove('active');b.style.background='#fff';b.style.color='#666';b.style.borderColor='#e0e0e0';});
@@ -478,15 +495,17 @@ function matchDeposito(el){return !_pedDeposito||(el.getAttribute('data-deposito
 function setCnt(id,n){var e=document.getElementById(id);if(e)e.textContent=n;}
 function filterPedidos(){
   var q=(document.getElementById('ped-search').value||'').toLowerCase();
-  var nPed=0,nDep=0;
+  var nPed=0,nDep=0,cntTipo={};
   document.querySelectorAll('#tbl-pedidos [id^="p-head-"]').forEach(function(tb){
     var cells=tb.querySelectorAll('td');
     var num=cells[0]?cells[0].textContent.toLowerCase():'';
     var cli=cells[2]?cells[2].textContent.toLowerCase():'';
+    var tp=(tb.getAttribute('data-tipo')||'').toLowerCase();
     var mQ=!q||num.indexOf(q)>=0||cli.indexOf(q)>=0;
     var mD=matchDeposito(tb);
-    if(mD)nDep++;
-    var show=mQ&&mD;
+    var mT=!_pedTipo||tp===_pedTipo;
+    if(mD){nDep++;cntTipo[tp]=(cntTipo[tp]||0)+1;}
+    var show=mQ&&mD&&mT;
     if(show)nPed++;
     tb.style.display=show?'':'none';
     var idx=tb.id.replace('p-head-','');
@@ -494,6 +513,12 @@ function filterPedidos(){
     if(det&&!show)det.style.display='none';
   });
   setCnt('cnt-pedidos',nPed);setCnt('cnt-tab-pedidos',nDep);
+  // Conteo por tipo (segun deposito elegido); tipos sin pedidos quedan atenuados
+  document.querySelectorAll('.ftipopd[data-tp]').forEach(function(b){
+    var n=cntTipo[b.getAttribute('data-tp')]||0;
+    var s=b.querySelector('.tp-cnt');if(s)s.textContent='('+n+')';
+    b.style.opacity=n?'':'.55';
+  });
   // Entregas Directas (filas clonadas: conservan data-deposito)
   var nEd=0;
   document.querySelectorAll('#tbl-entregas [id^="ed-head-"]').forEach(function(tb){
